@@ -1,5 +1,5 @@
 # WEBik 
-TEST
+
 # Technisch Ontwerp
 #### Controllers
 Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
