@@ -3,6 +3,8 @@
 # Technisch Ontwerp
 #### Controllers
 Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
+
+
 | Route          | Omschrijving                                                     | GET / POST     |
 | -------------  |:---------------------------------------------------------------  | --------------:|
 | **register()** | account aanmaken                                                 |  POST          |
@@ -13,6 +15,8 @@ Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
 | **upload()**   | foto uploaden op eigen profielpagina                             |  POST          |
 | **index()**    | beginpagina waar je kan kiezen om te registreren of in te loggen |  POST          |
 | **like()**     | een foto liken                                                   |  POST          |
+
+
 #### Views
 Schermen gegroepeerd en de links met pijlen aangegeven:
 <img src ="https://i.imgur.com/GncbGVc.jpg">
