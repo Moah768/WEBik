@@ -96,7 +96,8 @@ def register():
         hash = pwd_context.encrypt(request.form.get("password"))
 
         # comment
-        result = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hash)", username=request.form.get("username"),hash=hash)
+        result = db.execute("INSERT INTO users (username, hash, full_name) VALUES(:username, :hash, :full_name)", username=request.form.get("username"),hash=hash, full_name=full_name)
+
         if not result:
             return apology("choose another username.")
 
@@ -104,7 +105,7 @@ def register():
 
         session["user_id"] = rows[0]["id"]
 
-        return redirect(url_for("login"))
+        return redirect(url_for("index"))
 
     else:
         return render_template("register.html")
