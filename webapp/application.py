@@ -32,7 +32,9 @@ db = SQL("sqlite:///webik.db")
 @app.route("/")
 @login_required
 def index():
-    return apology("dit werkt nog niet")
+    return apology("dit werkt nog niet!")
+
+
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -69,6 +71,8 @@ def login():
     # if not POST then must be GET, render to login
     else:
         return render_template("login.html")
+
+
 
 @app.route("/logout")
 def logout():
