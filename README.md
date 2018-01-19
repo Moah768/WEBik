@@ -1,4 +1,4 @@
-# WEBik 
+# WEBik
 
 # Technisch Ontwerp
 #### Controllers
@@ -18,6 +18,7 @@ Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
 
 
 #### Views
+Test
 Schermen gegroepeerd en de links met pijlen aangegeven:
 <img src ="https://i.imgur.com/GncbGVc.jpg">
 <img src = "https://i.imgur.com/G3kh35f.jpg">
