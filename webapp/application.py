@@ -102,11 +102,11 @@ def register():
             return apology("must provide password")
 
         # ensure password control was submitted
-        elif not request.form.get("password-control"):
+        elif not request.form.get("password_control"):
             return apology("must provide password control")
 
         # ensures password is the same as password control
-        elif not request.form.get("password") == request.form.get("password-control"):
+        elif not request.form.get("password") == request.form.get("password_control"):
             return apology("Password control must be the same as password")
 
         # hashing the password
@@ -150,11 +150,11 @@ def change_password():
             return apology("must fill in new password")
 
         # ensure password control was submitted
-        elif not request.form.get("password-control"):
+        elif not request.form.get("password_control"):
             return apology("must fill in password control")
 
         # ensures new password is the same as password control
-        elif not request.form.get("new_password") == request.form.get("password-control"):
+        elif not request.form.get("new_password") == request.form.get("password_control"):
             return apology("Password control must be the same as password")
 
         # get hash old password
