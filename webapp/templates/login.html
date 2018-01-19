@@ -5,7 +5,18 @@
 {% endblock %}
 
 {% block main %}
-    <form action="{{ url_for('login') }}" method="post">
+    <body>
+         <form action="{{ url_for('login') }}" method="post">
+
+    <div class="grid-container">
+        <div class="row">
+            <div class="col-sm-4" ></div>
+            <div class="col-sm-4 rounded" >
+
+    <h1>
+        Inloggen
+    </h1>
+        </br>
         <fieldset>
             <div class="form-group">
                 <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
@@ -17,5 +28,9 @@
                 <button class="btn btn-default" type="submit">Log In</button>
             </div>
         </fieldset>
+
+            </div>
+
     </form>
+    </body>
 {% endblock %}
