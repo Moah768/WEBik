@@ -1,5 +1,5 @@
-# WEBik 
-TEST
+
+# WEBik
 # Technisch Ontwerp
 #### Controllers
 Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
@@ -33,4 +33,6 @@ Een korte lijst van plugins en frameworks:
 * Avatars: https://www.w3schools.com/howto/howto_css_image_avatar.asp
 * GIF’s: https://developers.giphy.com/docs/
 
+TEST
 
+TEST2
