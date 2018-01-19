@@ -1,3 +1,5 @@
+# TEEEEESSSSSSTTTTTTTTTT
+
 # Voorstel
 ### Samenvatting
 Het doel van onze webapplicatie is om een overzicht te krijgen van afbeeldingen en gifjes die:
@@ -55,7 +57,9 @@ Een andere site die wij hebben bekeken is Pinterest, wij zouden de manier waarop
 Ook Tumblr is een concurrent van onze webapplicatie, hier is het namelijk ook mogelijk om afbeeldingen en gifs te delen met anderen. Zij weergeven afbeeldingen/gifs ook op de manier zoals wij dat willen doen en ook is het mogelijk om deze content te liken. Het verschil met onze webapplicatie is dat het bij Tumblr ook mogelijk is om andere dingen dan afbeeldingen/gifs te delen zoals muziek,youtubefilmpjes en stukjes tekst. Onze webapplicatie richt zich specifiek op een bepaalde niche, namelijk het delen van foto's.
 
 ##### Moeilijkste delen
-In eerste instantie lijkt het ons moeiliijk om een site te creëren waarbij het mogelijk is om een account aan te maken en daarna vrienden te worden met andere gebruikers. Gezien dit in de komende opdrachten nog zal worden behandeld  zal dit hopelijk wel goed komen. Een ander  mogelijk probleem is de implementatie van de GIPHY applicatie die het mogelijk maakt om gifs te posten uit de database, maar ook het posten van foto's door de gebruikers zelf zal een hoop uitzoekwerk zijn. De grootste uitdaging zal waarschijnlijk het inrichten van de webpagina zijn.
+
+In eerste instantie lijkt het ons moeilijk om een site te creëren waarbij het mogelijk is om een account aan te maken en daarna vrienden te worden met andere gebruikers. Gezien dit in de komende opdrachten nog zal worden behandeld  zal dit hopelijk wel goed komen. Een ander  mogelijk probleem is de implementatie van de GIPHY applicatie die het mogelijk maakt om gifs te posten uit de database, maar ook het posten van foto's door de gebruikers zelf zal een hoop uitzoekwerk zijn. De grootste uitdaging zal waarschijnlijk het inrichten van de webpagina zijn.
+
 
 
 
