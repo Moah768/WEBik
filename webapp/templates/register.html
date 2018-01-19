@@ -5,6 +5,16 @@
 {% endblock %}
 
 {% block main %}
+<div class="grid-container">
+        <div class="row">
+            <div class="col-sm-4" ></div>
+            <div class="col-sm-4 rounded">
+
+    <h1>
+        Registreren
+    </h1>
+    </br>
+
     <form action="{{ url_for('register') }}" method="post">
         <fieldset>
             <div class="form-group">
@@ -23,5 +33,7 @@
                 <button class="btn btn-default" type="submit">Register</button>
             </div>
         </fieldset>
+
+        </div>
     </form>
 {% endblock %}
