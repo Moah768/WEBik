@@ -27,11 +27,12 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+db = SQL("sqlite:///webik.db")
 
 @app.route("/")
 @login_required
 def index():
+    return apology("dit werkt nog niet")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -67,7 +68,7 @@ def login():
 
     # if not POST then must be GET, render to login
     else:
-        return render_template("login2.html")
+        return render_template("login.html")
 
 @app.route("/logout")
 def logout():
@@ -77,6 +78,36 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
+    if request.method == "POST":
+        if not request.form.get("username"):
+            return apology("no username filled in")
+
+        # ensure password was submitted
+        elif not request.form.get("password"):
+            return apology("no password filled in")
+        # ensure password_confirmation was submitted
+        elif not request.form.get("confirmPassword"):
+            return apology("no password confirmation filled in")
+
+        elif request.form.get("password") != request.form.get("confirmPassword"):
+            return apology("password fields do not match")
+
+        # encrypt password
+        hash = pwd_context.encrypt(request.form.get("password"))
+
+        # comment
+        result = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hash)", username=request.form.get("username"),hash=hash)
+        if not result:
+            return apology("choose another username.")
+
+        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+
+        session["user_id"] = rows[0]["id"]
+
+        return redirect(url_for("login"))
+
+    else:
+        return render_template("register.html")
 
 
 @app.route("/change_password", methods=["GET", "POST"])
