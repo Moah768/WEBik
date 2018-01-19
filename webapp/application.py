@@ -32,7 +32,9 @@ db = SQL("sqlite:///webik.db")
 @app.route("/")
 @login_required
 def index():
-    return apology("dit werkt nog niet")
+    return apology("dit werkt nog niet!")
+
+
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -70,6 +72,8 @@ def login():
     else:
         return render_template("login.html")
 
+
+
 @app.route("/logout")
 def logout():
     """Log user out."""
@@ -102,11 +106,11 @@ def register():
             return apology("must provide password")
 
         # ensure password control was submitted
-        elif not request.form.get("password-control"):
+        elif not request.form.get("password_control"):
             return apology("must provide password control")
 
         # ensures password is the same as password control
-        elif not request.form.get("password") == request.form.get("password-control"):
+        elif not request.form.get("password") == request.form.get("password_control"):
             return apology("Password control must be the same as password")
 
         # hashing the password
@@ -150,11 +154,11 @@ def change_password():
             return apology("must fill in new password")
 
         # ensure password control was submitted
-        elif not request.form.get("password-control"):
+        elif not request.form.get("password_control"):
             return apology("must fill in password control")
 
         # ensures new password is the same as password control
-        elif not request.form.get("new_password") == request.form.get("password-control"):
+        elif not request.form.get("new_password") == request.form.get("password_control"):
             return apology("Password control must be the same as password")
 
         # get hash old password
