@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    volgend
+{% endblock %}
+
+{% block main %}
+    <table class="table table-striped">
+        <style>
+            tfoot {color:red;}
+        </style>
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in portfolio %}
+            <tr>
+                <td>{{ i.symbol }}</td>
+                <td>{{ i.name }}</td>
+                <td>{{ i.shares }}</td>
+                <td>{{ i.price }}</td>
+                <td>{{ i.total }}</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+{% endblock %}
