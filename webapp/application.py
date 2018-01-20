@@ -32,7 +32,16 @@ db = SQL("sqlite:///webik.db")
 @app.route("/")
 @login_required
 def index():
-    return apology("dit werkt nog niet!")
+
+
+
+
+    naam = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
+    full_name = naam[0]["full_name"]
+    username = naam[0]["username"]
+
+    return render_template("index.html", full_name = full_name, username = username)
+
 
 
 
