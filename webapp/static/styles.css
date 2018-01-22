@@ -60,7 +60,7 @@ h5 {
 
 .button {
 width: 110px;
-padding: 10px;
+padding: 5px;
 cursor: pointer;
 font-weight: bold;
 font-size: 100%;
@@ -71,7 +71,7 @@ border-radius: 5px;
 -moz-box-shadow:: 6px 6px 5px #999;
 -webkit-box-shadow:: 6px 6px 5px #999;
 box-shadow:: 6px 6px 5px #999;
-align-items: center;
+
 }
 .button:hover {
 color: #000000;
@@ -79,6 +79,13 @@ background: #87cefa;
 border: 1px solid #fff;
 }
 
+.button-wrapper{
+
+    justify-content: center;
+    align-items: center;
+    display: inline-block;
+    margin: 0 5px;
+}
 
 
 
@@ -123,3 +130,7 @@ main td
     /* left-align tables' cells */
     text-align: left;
 }
+
+
+
+

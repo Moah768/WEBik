@@ -36,9 +36,9 @@ def index():
 
 
 
-    naam = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
-    full_name = naam[0]["full_name"]
-    username = naam[0]["username"]
+    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
+    full_name = users[0]["full_name"]
+    username = users[0]["username"]
 
     return render_template("index.html", full_name = full_name, username = username)
 
@@ -188,5 +188,29 @@ def change_password():
     else:
         return render_template("change_password.html")
 
+@app.route("/gebruikers", methods=["GET", "POST"])
+@login_required
+def gebruikers():
+    """Weergeeft een tabel met alle gebruikers"""
+    users = db.execute("SELECT username, full_name FROM users WHERE id != :id", id = session["user_id"])
 
+     # print screen on page
+    return render_template("gebruikers.html", users = users )
 
+@app.route("/volgers", methods=["GET", "POST"])
+@login_required
+def volgers():
+    """Weergeeft een tabel met alle volgers van de gebruiker"""
+    volgers = db.execute("SELECT username, full_name FROM volgers WHERE id != :id", id = session["user_id"])
+
+     # print screen on page
+    return render_template("volgers.html", volgers = users )
+
+@app.route("/volgend", methods=["GET", "POST"])
+@login_required
+def volgend():
+    """Weergeeft een tabel met alle gebruikers die de gebruiker volgt"""
+    volgend = db.execute("SELECT username, full_name FROM volgend WHERE id != :id", id = session["user_id"])
+
+    # print screen on page
+    return render_template("volgend.html", volgend = users )

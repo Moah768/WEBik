@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    volgend
+    Volgend
 {% endblock %}
 
 {% block main %}
@@ -11,22 +11,21 @@
         </style>
         <thead>
             <tr>
-                <th>Symbol</th>
-                <th>Name</th>
-                <th>Shares</th>
-                <th>Price</th>
-                <th>TOTAL</th>
+                <th>Naam</th>
+                <th>Gebruikersnaam</th>
+                <th>Profiel</th>
             </tr>
         </thead>
         <tbody>
-        {% for i in portfolio %}
+        {% for i in users  %}
             <tr>
-                <td>{{ i.symbol }}</td>
-                <td>{{ i.name }}</td>
-                <td>{{ i.shares }}</td>
-                <td>{{ i.price }}</td>
-                <td>{{ i.total }}</td>
+                <td>{{ i.full_name }}</td>
+                <td>{{ i.username }}</td>
+                <td><a href="/volgers" class="button">Bekijk profiel</a></td>
             </tr>
+
+
+
         {% endfor %}
 
     </table>
