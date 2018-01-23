@@ -264,11 +264,20 @@ def uploaden():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
             # give the file the name of the usere and a number
-            first_part, file_extension = os.path.splitext('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, filename))
-            onlyfiles = next(os.walk('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)))[2] #dir is your directory path as string
+            first_part, file_extension = os.path.splitext('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'\
+            .format(username, filename))
+            onlyfiles = next(os.walk('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)))[2]
             number_files = str(len(onlyfiles))
             new_name = username + number_files + file_extension
-            rename = os.rename('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, filename), '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, new_name))
+            new_name_directory = '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, new_name)
+            rename = os.rename('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, filename),\
+            new_name_directory)
+
+
+            # put the directory in database
+            db.execute("INSERT INTO user_uploads (username, id, directory) VALUES (:username, :id, :directory)", username = username, id = session["user_id"], directory = new_name_directory )
+
+
 
             return render_template("index.html")
 
