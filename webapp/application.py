@@ -4,12 +4,22 @@ from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 
+# added for uploading files
+import os
+from werkzeug.utils import secure_filename
+UPLOAD_FOLDER = '/home/ubuntu/workspace/WEBik/webapp/userfotos'
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif'])
+
+
 import datetime
 
 from helpers import *
 
 # configure application
 app = Flask(__name__)
+
+# also added for uploading files
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -217,6 +227,30 @@ def volgend():
     return render_template("volgend.html", users = volgend )
 
 
+@app.route("/uploaden", methods=["GET", "POST"])
+@login_required
+def uploaden():
+    if request.method == "POST":
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaden',
+                                    filename=filename))
+
+    else:
+        return render_template("uploaden.html")
+
+
 
 @app.route("/search", methods=["GET", "POST"])
 @login_required
@@ -228,3 +262,4 @@ def search():
 
      # print screen on page
     return render_template("search.html", users = filter_users)
+

@@ -1,8 +1,17 @@
 import csv
 import urllib.request
 
+
 from flask import redirect, render_template, request, session
 from functools import wraps
+
+
+#added for uploading images
+# added for uploading files
+import os
+from werkzeug.utils import secure_filename
+UPLOAD_FOLDER = '/home/ubuntu/workspace/WEBik/webapp/userfotos'
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif'])
 
 
 def apology(message, code=400):
@@ -33,3 +42,8 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
+#check of allowed extensions ook hier in moet worden ingevoegd
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
