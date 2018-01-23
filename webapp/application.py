@@ -239,6 +239,8 @@ def uploaden():
         UPLOAD_FOLDER = '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)
         app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
+
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
@@ -252,8 +254,14 @@ def uploaden():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaden',
-                                    filename=filename))
+            first_part, file_extension = os.path.splitext('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, filename))
+            onlyfiles = next(os.walk('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)))[2] #dir is your directory path as string
+            number_files = str(len(onlyfiles))
+            new_name = username + number_files + file_extension
+            rename = os.rename('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, filename), '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, new_name))
+
+            return render_template("index.html")
+
 
     else:
         return render_template("uploaden.html")
