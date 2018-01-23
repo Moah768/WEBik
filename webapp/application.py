@@ -298,3 +298,7 @@ def search():
     # print screen on page
     return render_template("search.html", users = filter_users)
 
+@app.route("/gallery", methods=["GET", "POST"])
+@login_required
+def gallery():
+    return render_template("gallery.html")
