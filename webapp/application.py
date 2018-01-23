@@ -258,6 +258,8 @@ def search():
     """Weergeeft een tabel met alle gebruikers"""
     search_input = request.form.get("search_input")
 
+
+
     filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id AND username = :search_input OR full_name =:search_input", id = session["user_id"], search_input=search_input)
 
      # print screen on page
