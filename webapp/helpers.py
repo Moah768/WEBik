@@ -10,7 +10,6 @@ from functools import wraps
 # added for uploading files
 import os
 from werkzeug.utils import secure_filename
-UPLOAD_FOLDER = '/home/ubuntu/workspace/WEBik/webapp/userfotos'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif'])
 
 
