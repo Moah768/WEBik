@@ -7,7 +7,6 @@ from tempfile import mkdtemp
 # added for uploading files
 import os
 from werkzeug.utils import secure_filename
-UPLOAD_FOLDER = '/home/ubuntu/workspace/WEBik/webapp/userfotos'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif'])
 
 
@@ -18,8 +17,6 @@ from helpers import *
 # configure application
 app = Flask(__name__)
 
-# also added for uploading files
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -230,6 +227,17 @@ def volgend():
 @login_required
 def uploaden():
     if request.method == "POST":
+        users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
+        username = users[0]["username"]
+
+        newpath = r'/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)
+        if not os.path.exists(newpath):
+            os.makedirs(newpath)
+
+         # also added for uploading files
+        UPLOAD_FOLDER = '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
