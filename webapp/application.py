@@ -195,14 +195,14 @@ def change_password():
     else:
         return render_template("change_password.html")
 
-@app.route("/gebruikers", methods=["GET", "POST"])
-@login_required
-def gebruikers():
-    """Weergeeft een tabel met alle gebruikers"""
-    users = db.execute("SELECT username, full_name FROM users WHERE id != :id", id = session["user_id"])
+#@app.route("/gebruikers", methods=["GET", "POST"])
+#@login_required
+#def gebruikers():
+#    """Weergeeft een tabel met alle gebruikers"""
+#    users = db.execute("SELECT username, full_name FROM users WHERE id != :id", id = session["user_id"])
 
      # print screen on page
-    return render_template("gebruikers.html", users = users )
+#    return render_template("gebruikers.html", users = users )
 
 @app.route("/volgers", methods=["GET", "POST"])
 @login_required
@@ -211,7 +211,7 @@ def volgers():
     volgers = db.execute("SELECT username, full_name FROM volgers WHERE id != :id", id = session["user_id"])
 
      # print screen on page
-    return render_template("volgers.html", volgers = users )
+    return render_template("volgers.html", users = volgers )
 
 @app.route("/volgend", methods=["GET", "POST"])
 @login_required
@@ -220,7 +220,8 @@ def volgend():
     volgend = db.execute("SELECT username, full_name FROM volgend WHERE id != :id", id = session["user_id"])
 
     # print screen on page
-    return render_template("volgend.html", volgend = users )
+
+    return render_template("volgend.html", users = volgend )
 
 
 @app.route("/uploaden", methods=["GET", "POST"])
@@ -265,7 +266,7 @@ def search():
     """Weergeeft een tabel met alle gebruikers"""
     search_input = request.form.get("search_input")
 
-    filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id AND username =:search_input OR full_name =:search_input", id = session["user_id"], search_input=search_input)
+    filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id AND username = :search_input OR full_name =:search_input", id = session["user_id"], search_input=search_input)
 
      # print screen on page
     return render_template("search.html", users = filter_users)
