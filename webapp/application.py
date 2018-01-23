@@ -198,14 +198,14 @@ def change_password():
     else:
         return render_template("change_password.html")
 
-@app.route("/gebruikers", methods=["GET", "POST"])
-@login_required
-def gebruikers():
-    """Weergeeft een tabel met alle gebruikers"""
-    users = db.execute("SELECT username, full_name FROM users WHERE id != :id", id = session["user_id"])
+#@app.route("/gebruikers", methods=["GET", "POST"])
+#@login_required
+#def gebruikers():
+#    """Weergeeft een tabel met alle gebruikers"""
+#    users = db.execute("SELECT username, full_name FROM users WHERE id != :id", id = session["user_id"])
 
      # print screen on page
-    return render_template("gebruikers.html", users = users )
+#    return render_template("gebruikers.html", users = users )
 
 @app.route("/volgers", methods=["GET", "POST"])
 @login_required
