@@ -50,6 +50,9 @@ def index():
     return render_template("index.html", full_name = full_name, username = username)
 
 
+    #for photo in person_id:
+
+
 
 
 
