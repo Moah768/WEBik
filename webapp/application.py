@@ -47,6 +47,7 @@ def index():
     return render_template("index.html", full_name = full_name, username = username)
 
 
+
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
@@ -58,6 +59,7 @@ def profile():
     print(full_name)
     # print screen on page
     return render_template("profile.html", username=username, full_name=full_name)
+
 
 
 
@@ -219,7 +221,7 @@ def volgers():
     """Weergeeft een tabel met alle volgers van de gebruiker"""
     volgers = db.execute("SELECT username, full_name FROM volgers WHERE id != :id", id = session["user_id"])
 
-     # print screen on page
+    # print screen on page
     return render_template("volgers.html", users = volgers )
 
 @app.route("/volgend", methods=["GET", "POST"])
@@ -229,45 +231,61 @@ def volgend():
     volgend = db.execute("SELECT username, full_name FROM volgend WHERE id != :id", id = session["user_id"])
 
     # print screen on page
-
     return render_template("volgend.html", users = volgend )
 
 
 @app.route("/uploaden", methods=["GET", "POST"])
 @login_required
 def uploaden():
+
     if request.method == "POST":
+
+        # select username from user table
         users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
         username = users[0]["username"]
 
+        # check if the user already has his own file
         newpath = r'/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)
         if not os.path.exists(newpath):
             os.makedirs(newpath)
 
-         # also added for uploading files
+        # direction where the file should be placed
         UPLOAD_FOLDER = '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)
         app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-
 
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
+
+        # if user does not select file
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
+
+        # upload the new file and rename it
         if file and allowed_file(file.filename):
+
+            # save old file in the users folder
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            first_part, file_extension = os.path.splitext('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, filename))
-            onlyfiles = next(os.walk('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)))[2] #dir is your directory path as string
+
+            # give the file the name of the usere and a number
+            first_part, file_extension = os.path.splitext('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'\
+            .format(username, filename))
+            onlyfiles = next(os.walk('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)))[2]
             number_files = str(len(onlyfiles))
             new_name = username + number_files + file_extension
-            rename = os.rename('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, filename), '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, new_name))
+            new_name_directory = '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, new_name)
+            rename = os.rename('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, filename),\
+            new_name_directory)
+
+
+            # put the directory in database
+            db.execute("INSERT INTO user_uploads (username, id, directory) VALUES (:username, :id, :directory)", username = username, id = session["user_id"], directory = new_name_directory )
+
+
 
             return render_template("index.html")
 
@@ -281,6 +299,7 @@ def uploaden():
 def search():
     """Weergeeft een tabel met alle gebruikers"""
     if request.method == "POST":
+
 
         search_input = request.form.get("search_input")
         filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id AND username LIKE :search_input OR full_name LIKE :search_input", id = session["user_id"], search_input=search_input+"%")

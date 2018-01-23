@@ -32,10 +32,21 @@
           <div class="col-sm-1 rounded"> test</div>
           <div class="col-sm-8 rounded">
           <div class="row">
-         <div class="col-sm-6" style="background-color:lightcyan;">hier komen kolommen met foto's?</div>
+         <div class="col-sm-6" style="background-color:lightcyan;">
+           {% for photo in user_photos %}
+            <tr>
+              <td>{{ user_photos.upload_directory }}</td>
+
+            </tr>
+          </div>
         <div class="col-sm-6" style="background-color:lightgray;">test</div>
       </div>
           </div>
+
+
+
+
+          {% endfor %}
 
 
 
