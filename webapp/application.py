@@ -47,6 +47,18 @@ def index():
     return render_template("index.html", full_name = full_name, username = username)
 
 
+@app.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    """Weergeeft een index van een andere gebruiker"""
+    username = request.args.get('username')
+    full_name = request.args.get('fullname')
+
+    print(username)
+    print(full_name)
+    # print screen on page
+    return render_template("profile.html", username=username, full_name=full_name)
+
 
 
 
@@ -268,12 +280,12 @@ def uploaden():
 @login_required
 def search():
     """Weergeeft een tabel met alle gebruikers"""
-    search_input = request.form.get("search_input")
+    if request.method == "POST":
 
+        search_input = request.form.get("search_input")
+        filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id AND username LIKE :search_input OR full_name LIKE :search_input", id = session["user_id"], search_input=search_input+"%")
 
-
-    filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id AND username = :search_input OR full_name =:search_input", id = session["user_id"], search_input=search_input)
-
-     # print screen on page
-    return render_template("search.html", users = filter_users)
-
+         # print screen on page
+        return render_template("search.html", users = filter_users)
+    else:
+        return render_template("search.html")
