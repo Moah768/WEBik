@@ -40,9 +40,6 @@ db = SQL("sqlite:///webik.db")
 @login_required
 def index():
 
-
-
-
     users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
     full_name = users[0]["full_name"]
     username = users[0]["username"]
@@ -252,8 +249,10 @@ def uploaden():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaden',
-                                    filename=filename))
+
+
+
+            return redirect(url_for('uploaden', filename=filename))
 
     else:
         return render_template("uploaden.html")
