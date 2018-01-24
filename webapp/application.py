@@ -48,11 +48,9 @@ def index():
     full_name = users[0]["full_name"]
     username = users[0]["username"]
 
-    filename = db.execute("SElECT filename FROM user_uploads WHERE id = :id", id = session["user_id"])
+    file_info = db.execute("SElECT * FROM user_uploads WHERE id = :id", id = session["user_id"])
 
-    return render_template("index.html", full_name = full_name, username = username, filename = filename)
-
-
+    return render_template("index.html", full_name = full_name, file_info = file_info)
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
@@ -274,18 +272,6 @@ def uploaden():
             filename = "{}{}{}".format(username, number_files, extension)
             file.save(os.path.join(path, filename))
 
-            """
-            # give the file the name of the usere and a number
-            first_part, file_extension = os.path.splitext('static/userphotos/{}/{}'\
-            .format(username, filename))
-            onlyfiles = next(os.walk('static/userphotos/{}'.format(username)))[2]
-            number_files = str(len(onlyfiles))
-            new_name = username + number_files + file_extension
-            new_name_directory = 'static/userphotos/{}/{}'.format(username, new_name)
-            rename = os.rename('static/userphotos/{}/{}'.format(username, filename),\
-            new_name_directory)
-            """
-
             description = request.form.get("description")
 
             # put the directory in database
@@ -296,7 +282,6 @@ def uploaden():
             return redirect(url_for("index"))
     else:
         return render_template("uploaden.html")
-
 
 
 @app.route("/search", methods=["GET", "POST"])
