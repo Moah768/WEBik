@@ -50,7 +50,7 @@ def index():
 
     file_info = db.execute("SElECT * FROM user_uploads WHERE id = :id", id = session["user_id"])
 
-    return render_template("index.html", full_name = full_name, file_info = file_info)
+    return render_template("index.html", full_name = full_name, username = username, file_info = file_info)
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
@@ -223,9 +223,7 @@ def change_password():
 def followers():
     """Displays a list with all the followers of the user"""
 
-
-
-    followers = db.execute("SELECT username, full_name FROM volgend WHERE following_id = :id", id = session["user_id"])
+    followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id = session["user_id"])
 
     # print screen on page
     return render_template("followers.html", users = followers )
@@ -237,23 +235,26 @@ def add_following():
     username = request.args.get('username')
     full_name = request.args.get('fullname')
 
-    users = db.execute("SELECT username, id FROM users WHERE username = :username", username = username)
-    username = users[0]["username"]
+    users = db.execute("SELECT full_name, username, id FROM users WHERE username = :username", username = username)
+    following_full_name = users[0]["full_name"]
+    following_username = users[0]["username"]
     # id from user who you want to follow
     following_id = users[0]["id"]
 
-    own_username = db.execute("SELECT username FROM users WHERE id = :id", id = session["user_id"])
-    own_name = own_username[0]["username"]
+    own_user = db.execute("SELECT full_name, username FROM users WHERE id = :id", id = session["user_id"])
+    own_full_name = own_user[0]["full_name"]
+    own_username = own_user[0]["username"]
 
-    following = db.execute("SELECT * FROM volgend WHERE following_username = :username",
-                         username = username)
+
+    following = db.execute("SELECT * FROM volgend WHERE following_username = :following_username AND own_username = :own_username",
+                         following_username = following_username, own_username = own_username)
 
     # if you don't follow the user add the user to your following list
     if len(following) == 0:
-        db.execute("INSERT INTO volgend (own_username, following_username, own_id, following_id) \
-                    VALUES(:own_username, :following_username, :own_id, :following_id)",
-                    own_username = own_name , following_username = username , own_id = session["user_id"],
-                    following_id = following_id)
+        db.execute("INSERT INTO volgend (own_username, following_username, own_id, following_id, own_full_name, following_full_name) \
+                    VALUES(:own_username, :following_username, :own_id, :following_id, :own_full_name, :following_full_name)",
+                    own_username = own_username , following_username = username , own_id = session["user_id"],
+                    following_id = following_id, own_full_name = own_full_name , following_full_name = following_full_name )
 
 
     #followers = db.execute("SELECT * FROM volgers WHERE username = :username",
@@ -276,7 +277,7 @@ def add_following():
 @login_required
 def following():
     """Displays a list with all the users that you are following"""
-    following = db.execute("SELECT following_username FROM volgend WHERE own_id = :id", id = session["user_id"])
+    following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = session["user_id"])
 
     # print screen on page
     return render_template("following.html", users = following )
