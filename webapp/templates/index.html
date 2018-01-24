@@ -36,7 +36,10 @@
              <tbody>
                  {% for info in file_info %}
                  <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
-
+                <p>
+                    {{info.description}}
+                </p>
+                <td><a href=".",  class="button">Like</a></td>
                  {% endfor %}
 
                  </tbody>
