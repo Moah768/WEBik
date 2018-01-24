@@ -283,7 +283,8 @@ def uploaden():
 
 
             # put the directory in database
-            db.execute("INSERT INTO user_uploads (username, id, directory) VALUES (:username, :id, :directory)", username = username, id = session["user_id"], directory = new_name_directory )
+            db.execute("INSERT INTO user_uploads (username, id, directory) VALUES (:username, :id, :directory)",\
+            username = username, id = session["user_id"], directory = new_name_directory )
 
 
 
@@ -299,7 +300,6 @@ def uploaden():
 def search():
     """Weergeeft een tabel met alle gebruikers"""
     if request.method == "POST":
-
 
         search_input = request.form.get("search_input")
         filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id AND username LIKE :search_input OR full_name LIKE :search_input", id = session["user_id"], search_input=search_input+"%")
