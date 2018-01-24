@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
@@ -283,8 +283,9 @@ def uploaden():
 
 
             # put the directory in database
-            db.execute("INSERT INTO user_uploads (username, id, directory) VALUES (:username, :id, :directory)",\
-            username = username, id = session["user_id"], directory = new_name_directory )
+            db.execute("INSERT INTO user_uploads (username, id, directory) \
+                        VALUES (:username, :id, :directory)", username = username, \
+                        id = session["user_id"], directory = new_name_directory )
 
 
 
@@ -302,9 +303,18 @@ def search():
     if request.method == "POST":
 
         search_input = request.form.get("search_input")
-        filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id AND username LIKE :search_input OR full_name LIKE :search_input", id = session["user_id"], search_input=search_input+"%")
+        filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id \
+                                    AND username LIKE :search_input OR full_name LIKE :search_input", \
+                                    id = session["user_id"], search_input=search_input+"%")
 
          # print screen on page
         return render_template("search.html", users = filter_users)
     else:
         return render_template("search.html")
+
+
+
+
+@app.route('/userfotos/<username>/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
