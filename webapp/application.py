@@ -286,10 +286,12 @@ def uploaden():
             new_name_directory)
             """
 
+            description = request.form.get("description")
+
             # put the directory in database
-            db.execute("INSERT INTO user_uploads (username, id, directory) \
-                        VALUES (:username, :id, :directory)", username = username, \
-                        id = session["user_id"], directory = os.path.join(username, filename))
+            db.execute("INSERT INTO user_uploads (username, id, directory, description, name_photo) \
+                        VALUES (:username, :id, :directory, :description, :name_photo)", username = username, \
+                        id = session["user_id"], directory = os.path.join(username, filename), description=description, name_photo=filename)
 
 
 
