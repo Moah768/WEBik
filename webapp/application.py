@@ -39,14 +39,13 @@ db = SQL("sqlite:///webik.db")
 @app.route("/")
 @login_required
 def index():
-
     users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
     full_name = users[0]["full_name"]
     username = users[0]["username"]
 
+    photos = db.execute("SElECT directory FROM user_uploads WHERE id = :id", id = session["user_id"])
 
-
-    return render_template("index.html", full_name = full_name, username = username)
+    return render_template("index.html", full_name = full_name, username = username, photos = photos)
 
 
 
