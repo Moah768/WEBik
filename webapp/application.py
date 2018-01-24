@@ -39,6 +39,7 @@ db = SQL("sqlite:///webik.db")
 @app.route("/")
 @login_required
 def index():
+    """Displays the profilepage of the user that has logged in"""
 
     users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
     full_name = users[0]["full_name"]
@@ -51,18 +52,13 @@ def index():
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
-    """Weergeeft een index van een andere gebruiker"""
+    """Displays the profilepage of a diffrent user"""
+
     username = request.args.get('username')
     full_name = request.args.get('fullname')
 
-    print(username)
-    print(full_name)
     # print screen on page
     return render_template("profile.html", username=username, full_name=full_name)
-
-
-
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -98,8 +94,6 @@ def login():
     # if not POST then must be GET, render to login
     else:
         return render_template("login.html")
-
-
 
 @app.route("/logout")
 def logout():
@@ -215,23 +209,23 @@ def change_password():
      # print screen on page
 #    return render_template("gebruikers.html", users = users )
 
-@app.route("/volgers", methods=["GET", "POST"])
+@app.route("/followers", methods=["GET", "POST"])
 @login_required
-def volgers():
-    """Weergeeft een tabel met alle volgers van de gebruiker"""
-    volgers = db.execute("SELECT username, full_name FROM volgers WHERE id != :id", id = session["user_id"])
+def followers():
+    """Displays a list with all the followers of the user"""
+    followers = db.execute("SELECT username, full_name FROM volgers WHERE id != :id", id = session["user_id"])
 
     # print screen on page
-    return render_template("volgers.html", users = volgers )
+    return render_template("followers.html", users = followers )
 
-@app.route("/volgend", methods=["GET", "POST"])
+@app.route("/following", methods=["GET", "POST"])
 @login_required
-def volgend():
-    """Weergeeft een tabel met alle gebruikers die de gebruiker volgt"""
-    volgend = db.execute("SELECT username, full_name FROM volgend WHERE id != :id", id = session["user_id"])
+def following():
+    """Displays a list with all the users that you are following"""
+    following = db.execute("SELECT username, full_name FROM volgend WHERE id != :id", id = session["user_id"])
 
     # print screen on page
-    return render_template("volgend.html", users = volgend )
+    return render_template("following.html", users = following )
 
 
 @app.route("/uploaden", methods=["GET", "POST"])
@@ -286,6 +280,7 @@ def uploaden():
             db.execute("INSERT INTO user_uploads (username, id, directory) \
                         VALUES (:username, :id, :directory)", username = username, \
                         id = session["user_id"], directory = new_name_directory )
+
 
 
 
