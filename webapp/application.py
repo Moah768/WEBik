@@ -44,6 +44,8 @@ def index():
     full_name = users[0]["full_name"]
     username = users[0]["username"]
 
+
+
     return render_template("index.html", full_name = full_name, username = username)
 
 
@@ -314,7 +316,3 @@ def search():
 
 
 
-
-@app.route('/userfotos/<username>/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
