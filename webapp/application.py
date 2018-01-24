@@ -58,11 +58,12 @@ def profile():
     """Weergeeft een index van een andere gebruiker"""
     username = request.args.get('username')
     full_name = request.args.get('fullname')
+    user_profile = db.execute("SELECT * FROM user_uploads WHERE username = :username", username = username)
 
     print(username)
     print(full_name)
     # print screen on page
-    return render_template("profile.html", username=username, full_name=full_name)
+    return render_template("profile.html", username=username, full_name=full_name, user_profile = user_profile)
 
 
 
