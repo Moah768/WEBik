@@ -39,7 +39,6 @@ db = SQL("sqlite:///webik.db")
 @app.route("/")
 @login_required
 def index():
-    """Displays the profilepage of the user that has logged in"""
 
     users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
     full_name = users[0]["full_name"]
@@ -52,13 +51,18 @@ def index():
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
-    """Displays the profilepage of a diffrent user"""
-
+    """Weergeeft een index van een andere gebruiker"""
     username = request.args.get('username')
     full_name = request.args.get('fullname')
 
+    print(username)
+    print(full_name)
     # print screen on page
     return render_template("profile.html", username=username, full_name=full_name)
+
+
+
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -277,7 +281,6 @@ def uploaden():
 
 
             # put the directory in database
-
             db.execute("INSERT INTO user_uploads (username, id, directory) VALUES (:username, :id, :directory)",\
             username = username, id = session["user_id"], directory = new_name_directory )
 
