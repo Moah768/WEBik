@@ -43,7 +43,7 @@
         <tbody>
         {% for photo in photos %}
 
-        <img src= "{{ photo.directory }}" >
+        <img src=" {{ url_for(photo.directory)}}" />
 
         {% endfor %}
 
