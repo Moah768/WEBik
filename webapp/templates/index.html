@@ -36,18 +36,18 @@
 
          </div>
         <div class="col-sm-6" style="background-color:lightgray;">test</div>
+        </div>
       </div>
-          </div>
-
-
-
-
-
-
-
-
-
     </div>
+
+        <tbody>
+        {% for photo in photos %}
+
+        <img src= "{{ photo.directory }}" >
+
+        {% endfor %}
+
+        </tbody>
 
 
 
