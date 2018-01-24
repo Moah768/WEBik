@@ -295,7 +295,7 @@ def uploaden():
 
 
 
-            return render_template("index.html")
+            return render_template("index.html", )
 
     else:
         return render_template("uploaden.html")
