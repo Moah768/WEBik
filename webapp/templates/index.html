@@ -43,7 +43,7 @@
         <tbody>
         {% for photo in photos %}
 
-        <img src= "{{ url_for('static', filename=photo.directory) }}" >
+        <img src= "{{ url_for( 'uploads', user=photo.directory, filename=) }}" >
 
 
         {% endfor %}

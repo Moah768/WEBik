@@ -31,6 +31,11 @@ if app.config["DEBUG"]:
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+
+# direction where the file should be placed
+UPLOAD_FOLDER = 'userphotos/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 Session(app)
 
 # configure CS50 Library to use SQLite database
@@ -244,13 +249,9 @@ def uploaden():
         username = users[0]["username"]
 
         # check if the user already has his own file
-        newpath = r'userfotos/{}'.format(username)
+        newpath = os.path.join(UPLOAD_FOLDER, username)
         if not os.path.exists(newpath):
             os.makedirs(newpath)
-
-        # direction where the file should be placed
-        UPLOAD_FOLDER = 'userfotos/{}'.format(username)
-        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -265,28 +266,30 @@ def uploaden():
 
         # upload the new file and rename it
         if file and allowed_file(file.filename):
-
             # save old file in the users folder
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.filename = secure_filename(file.filename)
+            path = os.path.join(UPLOAD_FOLDER, username)
+            number_files = len(next(os.walk(path))[2])
+            _, extension = os.path.splitext(file.filename)
+            filename = "{}{}{}".format(username, number_files, extension)
+            file.save(os.path.join(path, filename))
 
+            """
             # give the file the name of the usere and a number
-            first_part, file_extension = os.path.splitext('userfotos/{}/{}'\
+            first_part, file_extension = os.path.splitext('static/userphotos/{}/{}'\
             .format(username, filename))
-            onlyfiles = next(os.walk('userfotos/{}'.format(username)))[2]
+            onlyfiles = next(os.walk('static/userphotos/{}'.format(username)))[2]
             number_files = str(len(onlyfiles))
             new_name = username + number_files + file_extension
-            new_name_directory = 'userfotos/{}/{}'.format(username, new_name)
-            rename = os.rename('userfotos/{}/{}'.format(username, filename),\
+            new_name_directory = 'static/userphotos/{}/{}'.format(username, new_name)
+            rename = os.rename('static/userphotos/{}/{}'.format(username, filename),\
             new_name_directory)
-
+            """
 
             # put the directory in database
             db.execute("INSERT INTO user_uploads (username, id, directory) \
                         VALUES (:username, :id, :directory)", username = username, \
-                        id = session["user_id"], directory = new_name_directory )
-
-
+                        id = session["user_id"], directory = os.path.join(username, filename))
 
 
 
@@ -314,4 +317,6 @@ def search():
         return render_template("search.html")
 
 
-
+@app.route('/uploads/<user>/<filename>')
+def uploaded_file(user, filename):
+    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], user), filename)
