@@ -239,12 +239,12 @@ def uploaden():
         username = users[0]["username"]
 
         # check if the user already has his own file
-        newpath = r'/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)
+        newpath = r'userfotos/{}'.format(username)
         if not os.path.exists(newpath):
             os.makedirs(newpath)
 
         # direction where the file should be placed
-        UPLOAD_FOLDER = '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)
+        UPLOAD_FOLDER = 'userfotos/{}'.format(username)
         app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
         # check if the post request has the file part
@@ -266,18 +266,19 @@ def uploaden():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
             # give the file the name of the usere and a number
-            first_part, file_extension = os.path.splitext('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'\
+            first_part, file_extension = os.path.splitext('userfotos/{}/{}'\
             .format(username, filename))
-            onlyfiles = next(os.walk('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}'.format(username)))[2]
+            onlyfiles = next(os.walk('userfotos/{}'.format(username)))[2]
             number_files = str(len(onlyfiles))
             new_name = username + number_files + file_extension
-            new_name_directory = '/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, new_name)
-            rename = os.rename('/home/ubuntu/workspace/WEBik/webapp/userfotos/{}/{}'.format(username, filename),\
+            new_name_directory = 'userfotos/{}/{}'.format(username, new_name)
+            rename = os.rename('userfotos/{}/{}'.format(username, filename),\
             new_name_directory)
 
 
             # put the directory in database
-            db.execute("INSERT INTO user_uploads (username, id, directory) VALUES (:username, :id, :directory)",
+
+            db.execute("INSERT INTO user_uploads (username, id, directory) VALUES (:username, :id, :directory)",\
             username = username, id = session["user_id"], directory = new_name_directory )
 
 
@@ -294,7 +295,6 @@ def uploaden():
 def search():
     """Weergeeft een tabel met alle gebruikers"""
     if request.method == "POST":
-
 
         search_input = request.form.get("search_input")
         filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id AND username LIKE :search_input OR full_name LIKE :search_input", id = session["user_id"], search_input=search_input+"%")
