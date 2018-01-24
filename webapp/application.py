@@ -48,9 +48,9 @@ def index():
     full_name = users[0]["full_name"]
     username = users[0]["username"]
 
-    photos = db.execute("SElECT directory FROM user_uploads WHERE id = :id", id = session["user_id"])
+    filename = db.execute("SElECT filename FROM user_uploads WHERE id = :id", id = session["user_id"])
 
-    return render_template("index.html", full_name = full_name, username = username, photos = photos)
+    return render_template("index.html", full_name = full_name, username = username, filename = filename)
 
 
 
@@ -289,14 +289,11 @@ def uploaden():
             description = request.form.get("description")
 
             # put the directory in database
-            db.execute("INSERT INTO user_uploads (username, id, directory, description, name_photo) \
-                        VALUES (:username, :id, :directory, :description, :name_photo)", username = username, \
-                        id = session["user_id"], directory = os.path.join(username, filename), description=description, name_photo=filename)
+            db.execute("INSERT INTO user_uploads (username, id, directory, description, filename) \
+                        VALUES (:username, :id, :directory, :description, :filename)", username = username, \
+                        id = session["user_id"], directory = os.path.join(username, filename), description=description, filename=filename)
 
-
-
-            return render_template("index.html", )
-
+            return redirect(url_for("index"))
     else:
         return render_template("uploaden.html")
 
@@ -319,6 +316,6 @@ def search():
         return render_template("search.html")
 
 
-@app.route('/uploads/<user>/<filename>')
+@app.route('/uploaden/<user>/<filename>')
 def uploaded_file(user, filename):
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], user), filename)
