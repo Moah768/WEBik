@@ -31,6 +31,7 @@
                 <th>Naam</th>
                 <th>Gebruikersnaam</th>
                 <th>Profiel</th>
+                <th>Volgen</th>
             </tr>
         </thead>
         <tbody>
@@ -39,6 +40,7 @@
                 <td>{{ i.full_name }}</td>
                 <td>{{ i.username }}</td>
                 <td><a href="{{ url_for('profile') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Bekijk profiel</a></td>
+                <td><a href="{{ url_for('add_following') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Volg profiel</a></td>
             </tr>
 
 

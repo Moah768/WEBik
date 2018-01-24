@@ -218,16 +218,61 @@ def change_password():
 @login_required
 def followers():
     """Displays a list with all the followers of the user"""
-    followers = db.execute("SELECT username, full_name FROM volgers WHERE id != :id", id = session["user_id"])
+
+
+
+    followers = db.execute("SELECT username, full_name FROM volgend WHERE following_id = :id", id = session["user_id"])
 
     # print screen on page
     return render_template("followers.html", users = followers )
+
+@app.route("/add_following", methods=["GET", "POST"])
+@login_required
+def add_following():
+
+    username = request.args.get('username')
+    full_name = request.args.get('fullname')
+
+    users = db.execute("SELECT username, id FROM users WHERE username = :username", username = username)
+    username = users[0]["username"]
+    # id from user who you want to follow
+    following_id = users[0]["id"]
+
+    own_username = db.execute("SELECT username FROM users WHERE id = :id", id = session["user_id"])
+    own_name = own_username[0]["username"]
+
+    following = db.execute("SELECT * FROM volgend WHERE following_username = :username",
+                         username = username)
+
+    # if you don't follow the user add the user to your following list
+    if len(following) == 0:
+        db.execute("INSERT INTO volgend (own_username, following_username, own_id, following_id) \
+                    VALUES(:own_username, :following_username, :own_id, :following_id)",
+                    own_username = own_name , following_username = username , own_id = session["user_id"],
+                    following_id = following_id)
+
+
+    #followers = db.execute("SELECT * FROM volgers WHERE username = :username",
+    #                     username = username)
+
+
+    #if len(followers) == 0:
+    #    db.execute("INSERT INTO volgers (username, full_name, id, followers_id ) \
+    #                VALUES (:username, :full_name, :id, :followers_id)",
+    #               username = username, full_name = full_name, id = session["user_id"],
+    #                following_id = following_id)
+
+
+    return redirect(url_for("following"))
+
+
+
 
 @app.route("/following", methods=["GET", "POST"])
 @login_required
 def following():
     """Displays a list with all the users that you are following"""
-    following = db.execute("SELECT username, full_name FROM volgend WHERE id != :id", id = session["user_id"])
+    following = db.execute("SELECT following_username FROM volgend WHERE own_id = :id", id = session["user_id"])
 
     # print screen on page
     return render_template("following.html", users = following )
