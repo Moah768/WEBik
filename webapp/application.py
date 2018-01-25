@@ -207,15 +207,6 @@ def change_password():
     else:
         return render_template("change_password.html")
 
-#@app.route("/gebruikers", methods=["GET", "POST"])
-#@login_required
-#def gebruikers():
-#    """Weergeeft een tabel met alle gebruikers"""
-#    users = db.execute("SELECT username, full_name FROM users WHERE id != :id", id = session["user_id"])
-
-     # print screen on page
-#    return render_template("gebruikers.html", users = users )
-
 @app.route("/followers", methods=["GET", "POST"])
 @login_required
 def followers():
@@ -253,17 +244,6 @@ def add_following():
                     VALUES(:own_username, :following_username, :own_id, :following_id, :own_full_name, :following_full_name)",
                     own_username = own_username , following_username = username , own_id = session["user_id"],
                     following_id = following_id, own_full_name = own_full_name , following_full_name = following_full_name )
-
-
-    #followers = db.execute("SELECT * FROM volgers WHERE username = :username",
-    #                     username = username)
-
-
-    #if len(followers) == 0:
-    #    db.execute("INSERT INTO volgers (username, full_name, id, followers_id ) \
-    #                VALUES (:username, :full_name, :id, :followers_id)",
-    #               username = username, full_name = full_name, id = session["user_id"],
-    #                following_id = following_id)
 
 
     return redirect(url_for("following"))
@@ -352,6 +332,7 @@ def uploaded_file(user, filename):
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], user), filename)
 
 
+
 @app.route("/like", methods=["GET", "POST"])
 @login_required
 def like():
@@ -387,5 +368,21 @@ def like():
 
 
 
+
+
+@app.route("/timeline", methods=["GET", "POST"])
+@login_required
+def timeline():
+    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
+    full_name = users[0]["full_name"]
+    username = users[0]["username"]
+
+    #following = db.execute("SELECT following_username, following_full_name, following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
+    following_list = db.execute("SELECT following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
+
+    #for id in following_list:
+       # following_id = following_list[0]["following_id"]
+       # timeline_photos = db.execute("SElECT * FROM user_uploads WHERE id = :id", id = following_id)
+       # return render_template("timeline.html",full_name = full_name, username = username, timeline_photos = timeline_photos)
 
 
