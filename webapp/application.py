@@ -333,3 +333,18 @@ def uploaded_file(user, filename):
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], user), filename)
 
 
+@app.route("/timeline", methods=["GET", "POST"])
+@login_required
+def timeline():
+    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
+    full_name = users[0]["full_name"]
+    username = users[0]["username"]
+
+    #following = db.execute("SELECT following_username, following_full_name, following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
+    following_list = db.execute("SELECT following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
+
+    for id in following_list:
+        following_id = following_list[0]["following_id"]
+        timeline_photos = db.execute("SElECT * FROM user_uploads WHERE id = :id", id = following_id)
+        return render_template("timeline.html",full_name = full_name, username = username, timeline_photos = timeline_photos)
+
