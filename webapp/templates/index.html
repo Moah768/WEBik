@@ -39,7 +39,7 @@
                 <p>
                     <b>{{info.username}}:</b> {{info.description}}
                 </p>
-                <td><a href=".",  class="button">Like</a></td>
+                <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
                 </br>
                 </br>
                  {% endfor %}
