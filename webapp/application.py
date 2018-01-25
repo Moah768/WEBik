@@ -343,8 +343,8 @@ def timeline():
     #following = db.execute("SELECT following_username, following_full_name, following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
     following_list = db.execute("SELECT following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
 
-    for id in following_list:
-        following_id = following_list[0]["following_id"]
-        timeline_photos = db.execute("SElECT * FROM user_uploads WHERE id = :id", id = following_id)
-        return render_template("timeline.html",full_name = full_name, username = username, timeline_photos = timeline_photos)
+    #for id in following_list:
+       # following_id = following_list[0]["following_id"]
+       # timeline_photos = db.execute("SElECT * FROM user_uploads WHERE id = :id", id = following_id)
+       # return render_template("timeline.html",full_name = full_name, username = username, timeline_photos = timeline_photos)
 
