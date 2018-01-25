@@ -209,15 +209,6 @@ def change_password():
     else:
         return render_template("change_password.html")
 
-#@app.route("/gebruikers", methods=["GET", "POST"])
-#@login_required
-#def gebruikers():
-#    """Weergeeft een tabel met alle gebruikers"""
-#    users = db.execute("SELECT username, full_name FROM users WHERE id != :id", id = session["user_id"])
-
-     # print screen on page
-#    return render_template("gebruikers.html", users = users )
-
 @app.route("/followers", methods=["GET", "POST"])
 @login_required
 def followers():
@@ -255,17 +246,6 @@ def add_following():
                     VALUES(:own_username, :following_username, :own_id, :following_id, :own_full_name, :following_full_name)",
                     own_username = own_username , following_username = username , own_id = session["user_id"],
                     following_id = following_id, own_full_name = own_full_name , following_full_name = following_full_name )
-
-
-    #followers = db.execute("SELECT * FROM volgers WHERE username = :username",
-    #                     username = username)
-
-
-    #if len(followers) == 0:
-    #    db.execute("INSERT INTO volgers (username, full_name, id, followers_id ) \
-    #                VALUES (:username, :full_name, :id, :followers_id)",
-    #               username = username, full_name = full_name, id = session["user_id"],
-    #                following_id = following_id)
 
 
     return redirect(url_for("following"))
