@@ -5,16 +5,17 @@
 Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
 
 
-| Route          | Omschrijving                                                     | GET / POST     |
-| -------------  |:---------------------------------------------------------------  | --------------:|
-| **register()** | account aanmaken                                                 |  POST          |
-| **login()**    | inloggen in systeem                                              |  POST          |
-| **logout()**   | uitloggen en terug naar beginpagina                              |  session kill  |
-| **follow()**   | een gebruiker volgen                                             |  POST          |
-| **search()**   | zoeken naar personen om hun profielpagina te bekijken            |  GET           |
-| **upload()**   | foto uploaden op eigen profielpagina                             |  POST          |
-| **index()**    | beginpagina waar je kan kiezen om te registreren of in te loggen |  POST          |
-| **like()**     | een foto liken                                                   |  POST          |
+| Route                     | Omschrijving                                                                                 | GET / POST     |
+| ------------------------- |:-------------------------------------------------------------------------------------------  | --------------:|
+| **register()**            | account aanmaken                                                                             |  POST          |
+| **login()**               | inloggen in systeem                                                                          |  POST          |
+| **logout()**              | uitloggen en terug naar beginpagina                                                          |  session kill  |
+| **follow()**              | een gebruiker volgen                                                                         |  POST          |
+| **search()**              | zoeken naar personen om hun profielpagina te bekijken en hen daar ook te volgen              |  GET           |
+| **upload()**              | foto uploaden op eigen profielpagina                                                         |  POST          |
+| **index()**               | beginpagina waar je kan kiezen om te registreren of in te loggen                             |  POST          |
+| **change_password()**     | wachtwoord wijzigen                                                                          |  POST          |
+
 
 
 #### Views
