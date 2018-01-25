@@ -343,7 +343,7 @@ def like():
     check_likes = db.execute("SELECT like FROM likes WHERE own_id = :id AND filename = :filename",
                             id = session["user_id"], filename = filename)
     #print(check_likes)
-    #check_likes_user = check_likes[0]['like']
+    #check_likes_user = check_likes[0]["like"]
     #print(check_like_user)
 
     # if you haven't liked the photo already set the like to 1
@@ -365,9 +365,33 @@ def like():
 
     return redirect(url_for("index"))
 
+@app.route("/dislike", methods=["GET", "POST"])
+@login_required
+def dislike():
+
+    # get the filename of the picture that you want to dislike
+    filename = request.args.get('filename')
+
+     # check if you already have liked the picture
+    check_likes = db.execute("SELECT like FROM likes WHERE own_id = :id AND filename = :filename",
+                            id = session["user_id"], filename = filename)
+
+    if len(check_likes) == 0:
+        return apology("you have to like the picture first")
+
+    else:
+        db.execute("UPDATE likes SET like = :like - 1  WHERE own_id = :id AND filename = :filename",
+                    id = session["user_id"], filename = filename, like = 1)
+
+        check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
+                                        filename = filename)
+
+        total_likes = check_likes_filename[0]["likes"]
+        db.execute("UPDATE user_uploads SET likes = :likes - 1 WHERE filename = :filename",
+                    likes = total_likes, filename = filename)
 
 
-
+    return redirect(url_for("index"))
 
 
 @app.route("/timeline", methods=["GET", "POST"])
