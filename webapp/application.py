@@ -60,8 +60,6 @@ def profile():
     full_name = request.args.get('fullname')
     user_profile = db.execute("SELECT * FROM user_uploads WHERE username = :username", username = username)
 
-    print(username)
-    print(full_name)
     # print screen on page
     return render_template("profile.html", username=username, full_name=full_name, user_profile = user_profile)
 
@@ -326,6 +324,7 @@ def uploaden():
                         VALUES (:username, :id, :directory, :description, :filename)", username = username, \
                         id = session["user_id"], directory = os.path.join(username, filename), description=description, filename=filename)
 
+
             return redirect(url_for("index"))
     else:
         return render_template("uploaden.html")
@@ -351,5 +350,42 @@ def search():
 @app.route('/uploaden/<user>/<filename>')
 def uploaded_file(user, filename):
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], user), filename)
+
+
+@app.route("/like", methods=["GET", "POST"])
+@login_required
+def like():
+    # get the filename of the picture that you want to like
+    filename = request.args.get('filename')
+
+    # check if you already have liked the picture
+    check_likes = db.execute("SELECT like FROM likes WHERE own_id = :id AND filename = :filename",
+                            id = session["user_id"], filename = filename)
+    #print(check_likes)
+    #check_likes_user = check_likes[0]['like']
+    #print(check_like_user)
+
+    # if you haven't liked the photo already set the like to 1
+    if len(check_likes) == 0: #or check_likes_user == 0:
+        db.execute("INSERT INTO likes (own_id, filename, like) VALUES(:id, :filename, :like)",
+                    id = session["user_id"], filename = filename, like = 1)
+
+        check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
+                                        filename = filename)
+
+        total_likes = check_likes_filename[0]["likes"]
+        db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
+                    likes = total_likes, filename = filename)
+
+    # if you already liked the picture
+    else:
+        return apology("you already liked this picture")
+
+
+    return redirect(url_for("index"))
+
+
+
+
 
 
