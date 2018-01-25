@@ -255,7 +255,7 @@ def add_following():
 @login_required
 def following():
     """Displays a list with all the users that you are following"""
-    following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = session["user_id"])
+    following = db.execute("SELECT following_username, following_full_name, following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
 
     # print screen on page
     return render_template("following.html", users = following )
@@ -394,6 +394,7 @@ def dislike():
     return redirect(url_for("index"))
 
 
+
 @app.route("/timeline", methods=["GET", "POST"])
 @login_required
 def timeline():
@@ -401,12 +402,11 @@ def timeline():
     full_name = users[0]["full_name"]
     username = users[0]["username"]
 
-    #following = db.execute("SELECT following_username, following_full_name, following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
     following_list = db.execute("SELECT following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
 
-    #for id in following_list:
-       # following_id = following_list[0]["following_id"]
-       # timeline_photos = db.execute("SElECT * FROM user_uploads WHERE id = :id", id = following_id)
-       # return render_template("timeline.html",full_name = full_name, username = username, timeline_photos = timeline_photos)
+    (test_ids)=[d['following_id'] for d in following_list]
+
+    timeline_photos = db.execute("SELECT * FROM user_uploads WHERE id IN (:ids)", ids = test_ids)
+    return render_template("timeline.html",full_name = full_name, username = username, timeline_photos=timeline_photos)
 
 
