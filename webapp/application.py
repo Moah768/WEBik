@@ -339,20 +339,17 @@ def like():
     # get the filename of the picture that you want to like
     filename = request.args.get('filename')
 
-    # check if you already have liked the picture
+    # check if user already has liked the picture
     check_likes = db.execute("SELECT like FROM likes WHERE own_id = :id AND filename = :filename",
                             id = session["user_id"], filename = filename)
-    #print(check_likes)
-    #check_likes_user = check_likes[0]["like"]
-    #print(check_like_user)
+
+    check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
+                                        filename = filename)
 
     # if you haven't liked the photo already set the like to 1
-    if len(check_likes) == 0: #or check_likes_user == 0:
+    if len(check_likes) == 0:
         db.execute("INSERT INTO likes (own_id, filename, like) VALUES(:id, :filename, :like)",
                     id = session["user_id"], filename = filename, like = 1)
-
-        check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
-                                        filename = filename)
 
         total_likes = check_likes_filename[0]["likes"]
         db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
@@ -360,35 +357,48 @@ def like():
 
     # if you already liked the picture
     else:
-        return apology("you already liked this picture")
+        check_likes_user = check_likes[0]["like"]
+        if check_likes_user == 1:
+            return apology("you already liked this picture")
+        else:
+            db.execute("UPDATE likes SET like = :like + 1 WHERE own_id = :id AND filename = :filename",
+                    like = check_likes_user, id = session["user_id"], filename = filename)
 
+            total_likes = check_likes_filename[0]["likes"]
+            db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
+                    likes = total_likes, filename = filename)
 
     return redirect(url_for("index"))
 
 @app.route("/dislike", methods=["GET", "POST"])
 @login_required
 def dislike():
-
     # get the filename of the picture that you want to dislike
     filename = request.args.get('filename')
 
-     # check if you already have liked the picture
+    # check if you already have liked the picture
     check_likes = db.execute("SELECT like FROM likes WHERE own_id = :id AND filename = :filename",
                             id = session["user_id"], filename = filename)
+
+    check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
+                                        filename = filename)
 
     if len(check_likes) == 0:
         return apology("you have to like the picture first")
 
     else:
-        db.execute("UPDATE likes SET like = :like - 1  WHERE own_id = :id AND filename = :filename",
-                    id = session["user_id"], filename = filename, like = 1)
+        check_likes_user = check_likes[0]["like"]
+        if check_likes_user == 0:
+            return apology ("you have to like this picture first")
 
-        check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
-                                        filename = filename)
+        else:
+            db.execute("UPDATE likes SET like = :like - 1  WHERE own_id = :id AND filename = :filename",
+                        id = session["user_id"], filename = filename, like = check_likes_user)
 
-        total_likes = check_likes_filename[0]["likes"]
-        db.execute("UPDATE user_uploads SET likes = :likes - 1 WHERE filename = :filename",
-                    likes = total_likes, filename = filename)
+            total_likes = check_likes_filename[0]["likes"]
+            db.execute("UPDATE user_uploads SET likes = :likes - 1 WHERE filename = :filename",
+                        likes = total_likes, filename = filename)
+
 
 
     return redirect(url_for("index"))
