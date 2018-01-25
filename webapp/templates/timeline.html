@@ -29,13 +29,13 @@
           </br>
 
           </div>
-          <!--<div class="col-sm-1 rounded">test</div>
+          <div class="col-sm-1 rounded">test</div>
           <div class="col-sm-8 rounded">
           <div class="row">
          <div class="col-sm-6" style="background-color:lightcyan;">
              <tbody>
                  {% for info in timeline_photos %}
-                 <img src= "{{ url_for('uploaden')}}/{{following_username}}/{{info.filename}}" >
+                 <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
                 <p>
                     <b>{{info.username}}:</b> {{info.description}}
                 </p>
@@ -44,7 +44,7 @@
                 </br>
                  {% endfor %}
 
-             </tbody> -->
+             </tbody>
 
 
          </div>
