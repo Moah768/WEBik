@@ -47,6 +47,7 @@ def index():
     users = db.execute("SELECT username, full_name, bio FROM users WHERE id = :id", id = session["user_id"])
     full_name = users[0]["full_name"]
     username = users[0]["username"]
+    filename = db.execute("SELECT username FROM users WHERE id = :id", id = session["user_id"])
     bio = users[0]["bio"]
 
 
@@ -58,13 +59,18 @@ def index():
 @login_required
 def profile():
     """Weergeeft een index van een andere gebruiker"""
-    username = request.args.get('username')
-    full_name = request.args.get('fullname')
-    user_profile = db.execute("SELECT * FROM user_uploads WHERE username = :username ORDER BY date DESC", username = username)
-    user_bio = db.execute("SELECT bio FROM users WHERE username = :username", username = username)
+    userid = session["user_id"]
+
+    user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
+    user_bio = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
     bio = user_bio[0]['bio']
-    # print screen on page
-    return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile)
+    profile_picture = user_bio[0]["filename"]
+    full_name = user_bio[0]["full_name"]
+    username = user_bio[0]["username"]
+
+    print(profile_picture)
+
+    return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, profile_picture=profile_picture)
 
 
 
@@ -465,3 +471,50 @@ def delete():
 
     return redirect(url_for("index"))
 
+
+@app.route("/profile_picture", methods=["GET", "POST"])
+@login_required
+def profile_picture():
+
+    if request.method == "POST":
+        users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
+        full_name = users[0]["full_name"]
+        username = users[0]["username"]
+
+        # select username from user table
+        users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
+        username = users[0]["username"]
+
+        # check if the user already has his own file
+        newpath = os.path.join(UPLOAD_FOLDER, username)
+        if not os.path.exists(newpath):
+            os.makedirs(newpath)
+
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+
+        # if user does not select file
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        # upload the new file and rename it
+        if file and allowed_file(file.filename):
+            # save old file in the users folder
+            file.filename = secure_filename(file.filename)
+            path = os.path.join(UPLOAD_FOLDER, username)
+            number_files = len(next(os.walk(path))[2])
+            _, extension = os.path.splitext(file.filename)
+            filename = "profilepic_{}{}{}".format(username, number_files, extension)
+            file.save(os.path.join(path, filename))
+
+            # put the directory in database
+            db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :id", new_profile_pic_directory = os.path.join(username, filename), filename = filename, id = session["user_id"])
+
+
+            return redirect(url_for("index"))
+    else:
+        return render_template("profile_picture.html")
