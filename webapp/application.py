@@ -368,7 +368,7 @@ def like():
             db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
                     likes = total_likes, filename = filename)
 
-    return redirect(url_for("index"))
+    return redirect(url_for("timeline"))
 
 @app.route("/dislike", methods=["GET", "POST"])
 @login_required
@@ -401,7 +401,7 @@ def dislike():
 
 
 
-    return redirect(url_for("index"))
+    return redirect(url_for("timeline"))
 
 
 
@@ -420,3 +420,7 @@ def timeline():
     return render_template("timeline.html",full_name = full_name, username = username, timeline_photos=timeline_photos)
 
 
+@app.route("/settings", methods=["GET", "POST"])
+@login_required
+def settings():
+    return render_template("settings.html")

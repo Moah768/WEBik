@@ -8,6 +8,7 @@
     <div class="grid">
       <div class="profile"></div>
           <div class="col-sm-3 rounded" >
+             <a href="/settings" class="button">Settings</a>
             <h3>{{full_name}}</h3>
             <h6>(@{{username}})</h6>
             <img src = "https://image.flaticon.com/icons/svg/149/149448.svg">
@@ -15,11 +16,11 @@
 
             <div class="button-wrapper">
             <div class="col-sm-6">
-            <a href="/followers" class="button">Volgers</a>
+            <a href="/followers" class="button">Followers</a>
             </div>
 
             <div class="col-sm-6">
-            <a href="/following" class="button">Volgend</a>
+            <a href="/following" class="button">Following</a>
             </div>
 
             </div>
@@ -38,8 +39,11 @@
                  <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
                 <p>
                     <b>{{info.username}}:</b> {{info.description}}
+                    </br> +{{info.likes}}
                 </p>
-                <td><a href=".",  class="button">Like</a></td>
+                <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
+
+                <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
                 </br>
                 </br>
                  {% endfor %}
