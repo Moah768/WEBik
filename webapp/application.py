@@ -433,3 +433,11 @@ def trending():
 
     trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
     return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
+
+@app.route("/delete", methods=["GET", "POST"])
+@login_required
+def delete():
+    delete_name = request.args.get('filename')
+    delete.photo = db.execute("DELETE FROM user_uploads WHERE filename = :filename",filename = delete_name)
+
+    return redirect(url_for("index"))

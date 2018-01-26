@@ -39,6 +39,8 @@
                 <p>
                     <b>{{info.username}}:</b> {{info.description}}
                     </br> +{{info.likes}}
+                    <td><a href="{{ url_for('delete')}}?filename={{info.filename}}",  class="button">Delete</a></td>
+                        </div>
                  {% endfor %}
 
                  </tbody>
