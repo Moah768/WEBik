@@ -41,6 +41,7 @@
                 <td>{{ i.username }}</td>
                 <td><a href="{{ url_for('profile') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Bekijk profiel</a></td>
                 <td><a href="{{ url_for('add_following') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Volg profiel</a></td>
+                <td><a href="{{ url_for('remove_following') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Ontvolg profiel</a></td>
             </tr>
 
 
