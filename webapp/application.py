@@ -466,11 +466,15 @@ def bio():
 @app.route("/delete", methods=["GET", "POST"])
 @login_required
 def delete():
+    # get name of file you want to delete
     delete_name = request.args.get('filename')
-    delete.photo = db.execute("DELETE FROM user_uploads WHERE filename = :filename",filename = delete_name)
+
+    # delete file in database
+    delete_photo = db.execute("DELETE FROM user_uploads WHERE filename = :filename",filename = delete_name)
 
     return redirect(url_for("index"))
 
+<<<<<<< HEAD
 
 @app.route("/profile_picture", methods=["GET", "POST"])
 @login_required
@@ -518,3 +522,13 @@ def profile_picture():
             return redirect(url_for("index"))
     else:
         return render_template("profile_picture.html")
+
+@app.route("/remove_following", methods=["GET", "POST"])
+@login_required
+def remove_following():
+
+    following_username = request.args.get('username')
+
+    remove_following = db.execute("DELETE FROM volgend WHERE own_id = :own_id AND following_username = :following_username", own_id = session["user_id"], following_username = following_username )
+
+    return redirect(url_for("following"))

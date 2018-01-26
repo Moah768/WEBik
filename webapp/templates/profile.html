@@ -26,6 +26,7 @@
 
             <div class="col-sm-6">
             <a href="{{ url_for('add_following') }}?fullname={{full_name}}&username={{username}}" class="button">Follow</a>
+            <td><a href="{{ url_for('remove_following') }}?fullname={{full_name}}&username={{username}}",  class="button">Unfollow</a></td>
             </div>
 
             </div>
@@ -45,7 +46,7 @@
                 <p>
                     <b>{{info.username}}:</b> {{info.description}}
                 </p>
-                <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
+                <td><a href="{{ url_for('like')}}?filename={{info.filename}}/",  class="button">Like</a></td>
                 <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
                 </br>
                 </br>
