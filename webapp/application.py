@@ -48,7 +48,7 @@ def index():
     full_name = users[0]["full_name"]
     username = users[0]["username"]
 
-    file_info = db.execute("SElECT * FROM user_uploads WHERE id = :id", id = session["user_id"])
+    file_info = db.execute("SElECT * FROM user_uploads WHERE id = :id ORDER BY date DESC", id = session["user_id"])
 
     return render_template("index.html", full_name = full_name, username = username, file_info = file_info)
 
@@ -58,7 +58,7 @@ def profile():
     """Weergeeft een index van een andere gebruiker"""
     username = request.args.get('username')
     full_name = request.args.get('fullname')
-    user_profile = db.execute("SELECT * FROM user_uploads WHERE username = :username", username = username)
+    user_profile = db.execute("SELECT * FROM user_uploads WHERE username = :username ORDER BY date DESC", username = username)
 
     # print screen on page
     return render_template("profile.html", username=username, full_name=full_name, user_profile = user_profile)
