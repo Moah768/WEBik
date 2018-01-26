@@ -435,7 +435,7 @@ def trending():
     bio = users[0]["bio"]
 
     trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
-<<<<<<< HEAD
+
     return render_template("trending.html", full_name = full_name, username = username, bio = bio, trending_photos=trending_photos)
 
 
