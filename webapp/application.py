@@ -459,7 +459,10 @@ def bio():
 @app.route("/delete", methods=["GET", "POST"])
 @login_required
 def delete():
+    # get name of file you want to delete
     delete_name = request.args.get('filename')
+
+    # delte file in database
     delete.photo = db.execute("DELETE FROM user_uploads WHERE filename = :filename",filename = delete_name)
 
     return redirect(url_for("index"))
