@@ -36,7 +36,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="{{ url_for('index') }}"><span class="blue">FOODSHOW</span></a>
+                        <a class="navbar-brand" href="{{ url_for('timeline') }}"><span class="blue">FOODSHOW</span></a>
                     </div>
                     <div class="collapse navbar-collapse" id="navbar">
                         {% if session.user_id %}
@@ -45,7 +45,7 @@
                                 <li><a href="{{ url_for('followers') }}">Volgers</a></li>
                                 <li><a href="{{ url_for('following') }}">Volgend</a></li>
                                 <li><a href="{{ url_for('search') }}">Search</a></li>
-                                <li><a href="{{ url_for('timeline') }}">Timeline</a></li>
+                                <li><a href="{{ url_for('index') }}">Index</a></li>
 
 
                             </ul>

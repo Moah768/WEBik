@@ -96,7 +96,7 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # redirect user to home page
-        return redirect(url_for("index"))
+        return redirect(url_for("timeline"))
 
     # if not POST then must be GET, render to login
     else:
