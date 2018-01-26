@@ -468,8 +468,6 @@ def delete():
 
     return redirect(url_for("index"))
 
-
-####### unfollow
 @app.route("/remove_following", methods=["GET", "POST"])
 @login_required
 def remove_following():
