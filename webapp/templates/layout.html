@@ -41,6 +41,7 @@
                     <div class="collapse navbar-collapse" id="navbar">
                         {% if session.user_id %}
                             <ul class="nav navbar-nav">
+                                <li><a href="{{ url_for('trending') }}">#TRENDING</a></li>
                                 <li><a href="{{ url_for('followers') }}">Followers</a></li>
                                 <li><a href="{{ url_for('following') }}">Following</a></li>
                                 <li><a href="{{ url_for('search') }}">Search</a></li>

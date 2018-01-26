@@ -399,8 +399,6 @@ def dislike():
             db.execute("UPDATE user_uploads SET likes = :likes - 1 WHERE filename = :filename",
                         likes = total_likes, filename = filename)
 
-
-
     return redirect(url_for("timeline"))
 
 
@@ -424,3 +422,14 @@ def timeline():
 @login_required
 def settings():
     return render_template("settings.html")
+
+
+@app.route("/trending", methods=["GET", "POST"])
+@login_required
+def trending():
+    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
+    full_name = users[0]["full_name"]
+    username = users[0]["username"]
+
+    trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
+    return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
