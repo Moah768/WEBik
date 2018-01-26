@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    GIF
+{% endblock %}
+
+{% block main %}
+    <form action="{{ url_for('gif') }}" method="post">
+        <fieldset>
+            <div class="form-group">
+                <input autocomplete="off" autofocus class="form-control" name="search" placeholder="Search" type="text"/>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-default" type="submit">Search</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}
