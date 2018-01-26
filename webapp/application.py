@@ -64,9 +64,10 @@ def profile():
     username = request.args.get('username')
     full_name = request.args.get('fullname')
     user_profile = db.execute("SELECT * FROM user_uploads WHERE username = :username ORDER BY date DESC", username = username)
-
+    user_bio = db.execute("SELECT bio FROM users WHERE username = :username", username = username)
+    bio = user_bio[0]['bio']
     # print screen on page
-    return render_template("profile.html", username=username, full_name=full_name, user_profile = user_profile)
+    return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile)
 
 
 
@@ -491,7 +492,10 @@ def trending():
 @app.route("/delete", methods=["GET", "POST"])
 @login_required
 def delete():
+    # get name of file you want to delete
     delete_name = request.args.get('filename')
+
+    # delte file in database
     delete.photo = db.execute("DELETE FROM user_uploads WHERE filename = :filename",filename = delete_name)
 
     return redirect(url_for("index"))
