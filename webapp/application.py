@@ -416,7 +416,7 @@ def timeline():
 
     (test_ids)=[d['following_id'] for d in following_list]
 
-    timeline_photos = db.execute("SELECT * FROM user_uploads WHERE id IN (:ids)", ids = test_ids)
+    timeline_photos = db.execute("SELECT * FROM user_uploads WHERE id IN (:ids) ORDER BY date DESC", ids = test_ids)
     return render_template("timeline.html",full_name = full_name, username = username, timeline_photos=timeline_photos)
 
 
