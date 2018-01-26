@@ -4,6 +4,7 @@ from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 
+
 # added for uploading files
 import os
 from werkzeug.utils import secure_filename
@@ -11,8 +12,12 @@ ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif'])
 
 
 import datetime
-
+import giphy_client
+import urllib,json
+from giphy_client.rest import ApiException
+from pprint import pprint
 from helpers import *
+import json
 
 # configure application
 app = Flask(__name__)
@@ -44,16 +49,17 @@ db = SQL("sqlite:///webik.db")
 @app.route("/")
 @login_required
 def index():
-    users = db.execute("SELECT username, full_name, bio FROM users WHERE id = :id", id = session["user_id"])
+    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
     full_name = users[0]["full_name"]
     username = users[0]["username"]
+
     filename = db.execute("SELECT username FROM users WHERE id = :id", id = session["user_id"])
     bio = users[0]["bio"]
 
 
     file_info = db.execute("SElECT * FROM user_uploads WHERE id = :id ORDER BY date DESC", id = session["user_id"])
 
-    return render_template("index.html", full_name = full_name, username = username, bio = bio, file_info = file_info)
+    return render_template("index.html", full_name = full_name, username = username, file_info = file_info)
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
@@ -314,9 +320,55 @@ def uploaden():
                         id = session["user_id"], directory = os.path.join(username, filename), description=description, filename=filename)
 
 
+
+
+
+
+
+
             return redirect(url_for("index"))
     else:
         return render_template("uploaden.html")
+
+@app.route("/gif", methods=["GET", "POST"])
+@login_required
+def gif():
+
+    if request.method == "POST":
+
+        api_instance = giphy_client.DefaultApi()
+        api_key = "hiyzSWMLmTXv4Yeea8kfA7k7CfR8CzLx"
+        q = request.form.get("search")
+        limit = 1
+
+         # ensure search query was submitted
+        if not q:
+            return apology("missing query")
+
+        try:
+            # Search Endpoint
+            api_response = api_instance.gifs_search_get(api_key, q, limit=limit)
+            print(api_response.data[0].url)
+            print(type(api_response.data[0].url))
+
+            for gif in api_response.data:
+                 h = gif.embed_url
+                 print(h)
+
+        except ApiException as e:
+            print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
+
+
+
+
+
+        return render_template("gif_display.html", h=h)
+
+    else:
+        return render_template("gif.html")
+
+
+
 
 
 @app.route("/search", methods=["GET", "POST"])
@@ -377,7 +429,10 @@ def like():
             db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
                     likes = total_likes, filename = filename)
 
+
+
     return redirect(url_for("timeline"))
+
 
 @app.route("/dislike", methods=["GET", "POST"])
 @login_required
@@ -436,31 +491,11 @@ def settings():
 @app.route("/trending", methods=["GET", "POST"])
 @login_required
 def trending():
-    users = db.execute("SELECT username, full_name, bio FROM users WHERE id = :id", id = session["user_id"])
+    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
     full_name = users[0]["full_name"]
     username = users[0]["username"]
-    bio = users[0]["bio"]
 
     trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
-
-    return render_template("trending.html", full_name = full_name, username = username, bio = bio, trending_photos=trending_photos)
-
-
-@app.route("/bio", methods=["GET", "POST"])
-@login_required
-def bio():
-    if request.method == "POST":
-        bio = request.form.get("bio")
-        if not request.form.get("bio"):
-            return apology("must fill in a bio")
-
-        else:
-            db.execute("UPDATE users SET bio = :new_bio WHERE  id = :id", new_bio = request.form.get("bio"), id = session["user_id"])
-
-        return redirect(url_for("index"))
-    else:
-        return render_template("bio.html")
-
     return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
 
 @app.route("/delete", methods=["GET", "POST"])
