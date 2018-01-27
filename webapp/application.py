@@ -49,17 +49,23 @@ db = SQL("sqlite:///webik.db")
 @app.route("/")
 @login_required
 def index():
+    userid = session["user_id"]
+
+    user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
+    user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
+    bio = user_info[0]['bio']
+    profile_picture = user_info[0]["filename"]
+    full_name = user_info[0]["full_name"]
+    username = user_info[0]["username"]
     users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
-    full_name = users[0]["full_name"]
-    username = users[0]["username"]
+
 
     filename = db.execute("SELECT username FROM users WHERE id = :id", id = session["user_id"])
-    bio = users[0]["bio"]
 
 
     file_info = db.execute("SElECT * FROM user_uploads WHERE id = :id ORDER BY date DESC", id = session["user_id"])
 
-    return render_template("index.html", full_name = full_name, username = username, file_info = file_info)
+    return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, profile_picture=profile_picture)
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
@@ -68,13 +74,11 @@ def profile():
     userid = session["user_id"]
 
     user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
-    user_bio = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
-    bio = user_bio[0]['bio']
-    profile_picture = user_bio[0]["filename"]
-    full_name = user_bio[0]["full_name"]
-    username = user_bio[0]["username"]
-
-    print(profile_picture)
+    user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
+    bio = user_info[0]['bio']
+    profile_picture = user_info[0]["filename"]
+    full_name = user_info[0]["full_name"]
+    username = user_info[0]["username"]
 
     return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, profile_picture=profile_picture)
 
@@ -470,16 +474,24 @@ def dislike():
 @app.route("/timeline", methods=["GET", "POST"])
 @login_required
 def timeline():
-    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
-    full_name = users[0]["full_name"]
-    username = users[0]["username"]
+    userid = session["user_id"]
+
+    user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
+    user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
+    bio = user_info[0]['bio']
+    profile_picture = user_info[0]["filename"]
+    full_name = user_info[0]["full_name"]
+    username = user_info[0]["username"]
+    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = userid)
+
 
     following_list = db.execute("SELECT following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
 
     (test_ids)=[d['following_id'] for d in following_list]
 
     timeline_photos = db.execute("SELECT * FROM user_uploads WHERE id IN (:ids) ORDER BY date DESC", ids = test_ids)
-    return render_template("timeline.html",full_name = full_name, username = username, timeline_photos=timeline_photos)
+    return render_template("timeline.html",full_name=full_name, username=username, timeline_photos=timeline_photos, \
+                            bio=bio, profile_picture=profile_picture)
 
 
 @app.route("/settings", methods=["GET", "POST"])
@@ -491,12 +503,22 @@ def settings():
 @app.route("/trending", methods=["GET", "POST"])
 @login_required
 def trending():
-    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
-    full_name = users[0]["full_name"]
-    username = users[0]["username"]
+    userid = session["user_id"]
+
+    user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
+    user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
+    bio = user_info[0]['bio']
+    profile_picture = user_info[0]["filename"]
+    full_name = user_info[0]["full_name"]
+    username = user_info[0]["username"]
+    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = userid)
+
+
 
     trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
-    return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
+
+    return render_template("trending.html", full_name = full_name, username = username, \
+                            trending_photos=trending_photos, bio=bio, profile_picture=profile_picture)
 
 @app.route("/delete", methods=["GET", "POST"])
 @login_required
@@ -566,3 +588,8 @@ def remove_following():
     remove_following = db.execute("DELETE FROM volgend WHERE own_id = :own_id AND following_username = :following_username", own_id = session["user_id"], following_username = following_username )
 
     return redirect(url_for("following"))
+
+@app.route("/bio", methods=["GET", "POST"])
+@login_required
+def bio():
+    return apology("Dit fiks ik x Paul")
