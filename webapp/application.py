@@ -509,7 +509,6 @@ def delete():
 
     return redirect(url_for("index"))
 
-<<<<<<< HEAD
 
 @app.route("/profile_picture", methods=["GET", "POST"])
 @login_required
