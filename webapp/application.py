@@ -352,22 +352,16 @@ def gif():
             print(type(api_response.data[0].url))
 
             for gif in api_response.data:
-                 h = gif.embed_url
-                 print(h)
+                 gif_url = gif.embed_url
+
 
         except ApiException as e:
             print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
-
-
-
-
 
         return render_template("gif_display.html", h=h)
 
     else:
         return render_template("gif.html")
-
-
 
 
 
@@ -509,7 +503,7 @@ def delete():
 
     return redirect(url_for("index"))
 
-<<<<<<< HEAD
+
 
 @app.route("/profile_picture", methods=["GET", "POST"])
 @login_required
