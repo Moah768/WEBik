@@ -585,4 +585,18 @@ def remove_following():
 @app.route("/bio", methods=["GET", "POST"])
 @login_required
 def bio():
-    return apology("Dit fiks ik x Paul")
+    if request.method == "POST":
+        bio = request.form.get("bio")
+        if not request.form.get("bio"):
+            return apology("must fill in a bio")
+
+        else:
+            db.execute("UPDATE users SET bio = :new_bio WHERE  id = :id", new_bio = request.form.get("bio"), id = session["user_id"])
+
+        return redirect(url_for("index"))
+    else:
+        return render_template("bio.html")
+
+    return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
+
+
