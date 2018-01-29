@@ -350,7 +350,7 @@ def gif():
 
 
         api_instance = giphy_client.DefaultApi()
-        api_key = "hiyzSWMLmTXv4Yeea8kfA7k7CfR8CzLx"
+        api_key = "dc6zaTOxFJmzC"
         q = request.form.get("search")
         limit = 1
 
