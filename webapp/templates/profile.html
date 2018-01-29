@@ -15,26 +15,30 @@
             <h6>{{bio}}</h6>
             </br>
 
-            <!--
+
             <div class="button-wrapper">
             <div class="col-sm-6">
-            <a href="/followers" class="button">Volgers</a>
+            <a href="{{ url_for('followers') }}?username={{username}}" class="button">Volgers</a>
             </div>
 
             <div class="col-sm-6">
-            <a href="/following" class="button">Volgend</a>
+            <a href="{{ url_for('following') }}?username={{username}}" class="button">Volgend</a>
             </div>
-            -->
-            <div class="button-wrapper">
+            </div>
+
+            </br>
+            <div class="row">
             <div class="col-sm-6">
             <a href="{{ url_for('add_following') }}?fullname={{full_name}}&username={{username}}" class="button">Follow</a>
             </div>
 
+
             <div class="col-sm-6">
             <td><a href="{{ url_for('remove_following') }}?fullname={{full_name}}&username={{username}}",  class="button">Unfollow</a></td>
             </div>
-
             </div>
+
+
 
 
           </br>
@@ -62,7 +66,7 @@
         <div class="col-sm-6" style="background-color:lightgray;">test</div>
         </div>
         </div>
-        </div>
+
 
 
 

@@ -49,6 +49,8 @@ db = SQL("sqlite:///webik.db")
 @app.route("/")
 @login_required
 def index():
+    """ Displays the profile of the user that has logged in"""
+
     userid = session["user_id"]
 
     user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
@@ -62,7 +64,6 @@ def index():
 
     filename = db.execute("SELECT username FROM users WHERE id = :id", id = session["user_id"])
 
-
     file_info = db.execute("SElECT * FROM user_uploads WHERE id = :id ORDER BY date DESC", id = session["user_id"])
 
     return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, profile_picture=profile_picture)
@@ -71,6 +72,7 @@ def index():
 @login_required
 def profile():
     """Weergeeft een index van een andere gebruiker"""
+
     userid = session["user_id"]
 
     full_name = request.args.get('username')
@@ -136,6 +138,7 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
+
     # forget any user_id
     session.clear()
 
@@ -191,7 +194,8 @@ def register():
 @login_required
 def change_password():
     """Allows user to change password"""
-        # if user reached route via POST (as by submitting a form via POST)
+
+    # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
         # ensure old password was submitted
@@ -232,10 +236,19 @@ def change_password():
 @login_required
 def followers():
     """Displays a list with all the followers of the user"""
-    username = request.args.get('username')
-    full_name = request.args.get('fullname')
 
-    followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id=session["user_id"])
+    # check if you are going to look at another profile's list of followers or your own list
+    username = request.args.get('username')
+
+    # if you are going to watch another profile's list get the data of that profile
+    if username:
+        id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+        id_username = id_username[0]["id"]
+        followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+
+    # get the data of your own profile
+    else:
+        followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id=session["user_id"])
 
     # print screen on page
     return render_template("followers.html", users = followers )
@@ -243,21 +256,24 @@ def followers():
 @app.route("/add_following", methods=["GET", "POST"])
 @login_required
 def add_following():
+    """ Adds a user to your followers and/or following list"""
 
+    # request the name of the person who you want to follow
     username = request.args.get('username')
-    full_name = request.args.get('fullname')
 
+    # acces the data of the user you want to follow in the database
     users = db.execute("SELECT full_name, username, id FROM users WHERE username = :username", username = username)
     following_full_name = users[0]["full_name"]
     following_username = users[0]["username"]
     # id from user who you want to follow
     following_id = users[0]["id"]
 
+    # get the data of the user who wants to follow the person
     own_user = db.execute("SELECT full_name, username FROM users WHERE id = :id", id = session["user_id"])
     own_full_name = own_user[0]["full_name"]
     own_username = own_user[0]["username"]
 
-
+    # check the database
     following = db.execute("SELECT * FROM volgend WHERE following_username = :following_username AND own_username = :own_username",
                          following_username = following_username, own_username = own_username)
 
@@ -265,23 +281,29 @@ def add_following():
     if len(following) == 0:
         db.execute("INSERT INTO volgend (own_username, following_username, own_id, following_id, own_full_name, following_full_name) \
                     VALUES(:own_username, :following_username, :own_id, :following_id, :own_full_name, :following_full_name)",
-                    own_username = own_username , following_username = username , own_id = session["user_id"],
+                    own_username = own_username , following_username = following_username , own_id = session["user_id"],
                     following_id = following_id, own_full_name = own_full_name , following_full_name = following_full_name )
 
 
     return redirect(url_for("following"))
 
-
-
-
 @app.route("/following", methods=["GET", "POST"])
 @login_required
 def following():
     """Displays a list with all the users that you are following"""
-    username = request.args.get('username')
-    full_name = request.args.get('fullname')
 
-    following = db.execute("SELECT following_username, following_full_name, following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
+    # check if you are going to look at another profile's list of following or your own list
+    username = request.args.get('username')
+
+    # another profile's list
+    if username:
+        id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+        id_username = id_username[0]["id"]
+        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+
+    # your own profile
+    else:
+        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = session["user_id"])
 
     # print screen on page
     return render_template("following.html", users = following )
@@ -347,10 +369,11 @@ def gif():
 
     if request.method == "POST":
 
-
-
         api_instance = giphy_client.DefaultApi()
+        # giphy public api key
         api_key = "dc6zaTOxFJmzC"
+
+        # get the user search request
         q = request.form.get("search")
         limit = 1
 
@@ -361,9 +384,8 @@ def gif():
         try:
             # Search Endpoint
             api_response = api_instance.gifs_search_get(api_key, q, limit=limit)
-            print(api_response.data[0].url)
-            print(type(api_response.data[0].url))
 
+            # from the datafile extract the url of the gif
             for gif in api_response.data:
                  gif_url = gif.embed_url
 
@@ -382,6 +404,7 @@ def gif():
 @login_required
 def search():
     """Weergeeft een tabel met alle gebruikers"""
+
     if request.method == "POST":
 
         search_input = request.form.get("search_input")
@@ -411,6 +434,7 @@ def like():
     check_likes = db.execute("SELECT like FROM likes WHERE own_id = :id AND filename = :filename",
                             id = session["user_id"], filename = filename)
 
+    # needed for total number of likes on picture
     check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
                                         filename = filename)
 
@@ -419,6 +443,7 @@ def like():
         db.execute("INSERT INTO likes (own_id, filename, like) VALUES(:id, :filename, :like)",
                     id = session["user_id"], filename = filename, like = 1)
 
+        # get total number of likes
         total_likes = check_likes_filename[0]["likes"]
         db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
                     likes = total_likes, filename = filename)
@@ -429,6 +454,7 @@ def like():
         if check_likes_user == 1:
             return apology("you already liked this picture")
         else:
+            # update the number of likes in user_uploads and likes
             db.execute("UPDATE likes SET like = :like + 1 WHERE own_id = :id AND filename = :filename",
                     like = check_likes_user, id = session["user_id"], filename = filename)
 
@@ -436,10 +462,7 @@ def like():
             db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
                     likes = total_likes, filename = filename)
 
-
-
     return redirect(url_for("timeline"))
-
 
 @app.route("/dislike", methods=["GET", "POST"])
 @login_required
@@ -450,14 +473,16 @@ def dislike():
     # check if you already have liked the picture
     check_likes = db.execute("SELECT like FROM likes WHERE own_id = :id AND filename = :filename",
                             id = session["user_id"], filename = filename)
-
+    # needed for overall likes
     check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
                                         filename = filename)
 
+    # check if the user has to like the picture first to create row in likes
     if len(check_likes) == 0:
         return apology("you have to like the picture first")
 
     else:
+        # update the tables with new number of likes
         check_likes_user = check_likes[0]["like"]
         if check_likes_user == 0:
             return apology ("you have to like this picture first")
@@ -471,8 +496,6 @@ def dislike():
                         likes = total_likes, filename = filename)
 
     return redirect(url_for("timeline"))
-
-
 
 @app.route("/timeline", methods=["GET", "POST"])
 @login_required
@@ -510,13 +533,12 @@ def trending():
 
     user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
     user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
+
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
     full_name = user_info[0]["full_name"]
     username = user_info[0]["username"]
     users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = userid)
-
-
 
     trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
 
@@ -576,7 +598,6 @@ def profile_picture():
 
             # put the directory in database
             db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :id", new_profile_pic_directory = os.path.join(username, filename), filename = filename, id = session["user_id"])
-
 
             return redirect(url_for("index"))
     else:
