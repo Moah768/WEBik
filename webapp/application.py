@@ -235,7 +235,7 @@ def followers():
     username = request.args.get('username')
     full_name = request.args.get('fullname')
 
-    followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE username = :username", username=username)
+    followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id=session["user_id"])
 
     # print screen on page
     return render_template("followers.html", users = followers )

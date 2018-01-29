@@ -15,6 +15,7 @@
             <h6>{{bio}}</h6>
             </br>
 
+            <!--
             <div class="button-wrapper">
             <div class="col-sm-6">
             <a href="/followers" class="button">Volgers</a>
@@ -23,9 +24,13 @@
             <div class="col-sm-6">
             <a href="/following" class="button">Volgend</a>
             </div>
-
+            -->
+            <div class="button-wrapper">
             <div class="col-sm-6">
             <a href="{{ url_for('add_following') }}?fullname={{full_name}}&username={{username}}" class="button">Follow</a>
+            </div>
+
+            <div class="col-sm-6">
             <td><a href="{{ url_for('remove_following') }}?fullname={{full_name}}&username={{username}}",  class="button">Unfollow</a></td>
             </div>
 
