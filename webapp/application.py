@@ -73,12 +73,14 @@ def profile():
     """Weergeeft een index van een andere gebruiker"""
     userid = session["user_id"]
 
-    user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
-    user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
+    full_name = request.args.get('username')
+    username = request.args.get('fullname')
+
+    user_profile = db.execute("SELECT * FROM user_uploads WHERE username=:username ORDER BY date DESC", username = username)
+    user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE username=:username", username = username)
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
-    full_name = user_info[0]["full_name"]
-    username = user_info[0]["username"]
+
 
     return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, profile_picture=profile_picture)
 
@@ -230,8 +232,10 @@ def change_password():
 @login_required
 def followers():
     """Displays a list with all the followers of the user"""
+    username = request.args.get('username')
+    full_name = request.args.get('fullname')
 
-    followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id = session["user_id"])
+    followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE username = :username", username=username)
 
     # print screen on page
     return render_template("followers.html", users = followers )
@@ -274,6 +278,9 @@ def add_following():
 @login_required
 def following():
     """Displays a list with all the users that you are following"""
+    username = request.args.get('username')
+    full_name = request.args.get('fullname')
+
     following = db.execute("SELECT following_username, following_full_name, following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
 
     # print screen on page
@@ -516,6 +523,7 @@ def trending():
     return render_template("trending.html", full_name = full_name, username = username, \
                             trending_photos=trending_photos, bio=bio, profile_picture=profile_picture)
 
+
 @app.route("/delete", methods=["GET", "POST"])
 @login_required
 def delete():
@@ -587,4 +595,18 @@ def remove_following():
 @app.route("/bio", methods=["GET", "POST"])
 @login_required
 def bio():
-    return apology("Dit fiks ik x Paul")
+    if request.method == "POST":
+        bio = request.form.get("bio")
+        if not request.form.get("bio"):
+            return apology("must fill in a bio")
+
+        else:
+            db.execute("UPDATE users SET bio = :new_bio WHERE  id = :id", new_bio = request.form.get("bio"), id = session["user_id"])
+
+        return redirect(url_for("index"))
+    else:
+        return render_template("bio.html")
+
+    return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
+
+
