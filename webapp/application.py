@@ -340,6 +340,8 @@ def gif():
 
     if request.method == "POST":
 
+
+
         api_instance = giphy_client.DefaultApi()
         api_key = "hiyzSWMLmTXv4Yeea8kfA7k7CfR8CzLx"
         q = request.form.get("search")
