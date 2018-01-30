@@ -629,9 +629,3 @@ def bio():
         return render_template("bio.html")
 
     return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
-
-
-
-#@app.route("/add_comment", methods=["GET", "POST"])
-#@login_required
-#def add_comment():
