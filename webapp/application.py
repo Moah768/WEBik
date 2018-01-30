@@ -593,7 +593,8 @@ def trending():
     trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
 
     return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos, bio=bio, \
-                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count, \
+                            users = users)
 
 
 @app.route("/delete", methods=["GET", "POST"])
