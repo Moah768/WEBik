@@ -5,14 +5,28 @@
 {% endblock %}
 
 {% block main %}
-<body>
-    <form method=post enctype=multipart/form-data>
-        <p><input type=file name=file>
-        </br>
-        <input type=submit value=Upload>
-        </br>
-        </p>
-    </form>
-</body>
+    <div class="grid-container">
+        <div class="row">
+            <div class="col-sm-4" ></div>
+            <div class="col-sm-4 rounded">
+                <h1>profile picture</h1>
+                </br>
+                <body>
+                    <form method=post enctype=multipart/form-data>
+                        <p><input type=file name=file>
+                        </br>
+                        <input type=submit value=Upload>
+                        </br>
+                        </p>
+                    </form>
+                </body>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
 
 {% endblock %}
