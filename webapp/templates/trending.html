@@ -6,8 +6,8 @@
 
 {% block main %}
     <div class="grid">
-      <div class="profile"></div>
-          <div class="col-sm-3 rounded" >
+        <div class="profile"></div>
+        <div class="col-sm-3 rounded" >
             </br>
             <a href="/settings" class="button">Settings</a>
             <h3>{{full_name}}</h3>
@@ -18,53 +18,45 @@
             </br>
 
             <div class="button-wrapper">
-            <div class="col-sm-6">
-            <a href="/followers" class="button">Followers: {{followers_count}} </a>
+                <div class="col-sm-6">
+                    <a href="/followers" class="button">Followers: {{followers_count}} </a>
+                </div>
+
+                <div class="col-sm-6">
+                    <a href="/following" class="button">Following: {{following_count}} </a>
+                </div>
+
             </div>
+            </br>
+            </br>
 
-            <div class="col-sm-6">
-            <a href="/following" class="button">Following: {{following_count}} </a>
+        </div>
+        <div class="col-sm-8 rounded">
+            <div class="row">
+                <div class="col-sm-6" style="background-color:white;">
+                    <tbody>
+                        {% for info in trending_photos %}
+                            <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
+
+                            {% for i in users %}
+                                <p>
+                                <b><td><a href="{{ url_for('profile') }}?fullname={{i.full_name}}&username={{i.username}}", class="link"> {{info.username}}:</a></td></b> {{info.description}}
+                                </br>
+                                +{{info.likes}}
+                                </p>
+                            {% endfor %}
+                            <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
+
+                            <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
+                            </br>
+                            </br>
+                            {% endfor %}
+
+                    </tbody>
+                 </div>
+                 <div class="col-sm-6">Feed</div>
             </div>
-
-            </div>
-
-
-          </br>
-          </br>
-
-          </div>
-          <div class="col-sm-8 rounded">
-          <div class="row">
-          <div class="col-sm-6" style="background-color:white;">
-             <tbody>
-                {% for info in trending_photos %}
-                <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
-
-                {% for i in users %}
-                <p>
-                    <b><td><a href="{{ url_for('profile') }}?fullname={{i.full_name}}&username={{i.username}}", class="link"> {{info.username}}:</a></td></b> {{info.description}}
-                    </br>
-                    +{{info.likes}}
-                </p>
-                {% endfor %}
-                <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
-
-                <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
-                </br>
-                </br>
-                {% endfor %}
-
-             </tbody>
-
-
-         </div>
-         <div class="col-sm-6">Feed</div>
-         </div>
-         </div>
+        </div>
     </div>
-
-
-
-
 
 {% endblock %}

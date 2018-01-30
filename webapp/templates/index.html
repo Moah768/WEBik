@@ -6,8 +6,8 @@
 
 {% block main %}
     <div class="grid">
-      <div class="profile"></div>
-          <div class="col-sm-3 rounded" >
+        <div class="profile"></div>
+        <div class="col-sm-3 rounded" >
             </br>
             <a href="/settings" class="button">Settings</a>
             <h3>{{full_name}}</h3>
@@ -16,45 +16,38 @@
             </br>
             <h6>{{bio}}</h6>
             </br>
-
             <div class="button-wrapper">
                 <div class="col-sm-6">
-                <a href="/followers" class="button">Followers: {{followers_count}} </a>
+                    <a href="/followers" class="button">Followers: {{followers_count}} </a>
                 </div>
-
                 <div class="col-sm-6">
-                <a href="/following" class="button">Following: {{following_count}} </a>
+                    <a href="/following" class="button">Following: {{following_count}} </a>
                 </div>
             </div>
             </br>
             </br>
-          </div>
+         </div>
 
-          <div class="col-sm-8 rounded">
-          <div class="row">
-            <div class="col-sm-6" style="background-color:white;">
-             <tbody>
-                 {% for info in file_info %}
-                 <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
-                 <p>
-                     <b>{{info.username}}:</b> {{info.description}}
-                    </br>
-                    +{{info.likes}}
-                 </p>
-                 <td><a href="{{ url_for('delete')}}?filename={{info.filename}}",  class="button">Delete</a></td>
-                 </br>
-                 </br>
-                 {% endfor %}
-             </tbody>
-
-          </div>
-          <div class="col-sm-6">Feed</div>
-          </div>
-          </div>
+        <div class="col-sm-8 rounded">
+            <div class="row">
+                <div class="col-sm-6" style="background-color:white;">
+                    <tbody>
+                        {% for info in file_info %}
+                        <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
+                        <p>
+                            <b>{{info.username}}:</b> {{info.description}}
+                            </br>
+                            +{{info.likes}}
+                        </p>
+                        <td><a href="{{ url_for('delete')}}?filename={{info.filename}}",  class="button">Delete</a></td>
+                        </br>
+                        </br>
+                        {% endfor %}
+                    </tbody>
+                </div>
+                <div class="col-sm-6">Feed</div>
+            </div>
+        </div>
     </div>
-
-
-
-
 
 {% endblock %}
