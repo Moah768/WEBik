@@ -38,8 +38,15 @@
           <div class="row">
          <div class="col-sm-6" style="background-color:lightcyan;">
              <tbody>
-                 {% for info in file_info %}
-                 <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
+                {% for info in file_info %}
+
+                {% if info.filetype == "gif" %}
+                    <img src ="{{info.filename}}">
+
+                {% else %}
+                    <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
+
+                 {% endif %}
                 <p>
                     <b>{{info.username}}:</b> {{info.description}}
                     </br> +{{info.likes}}

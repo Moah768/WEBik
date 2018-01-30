@@ -348,9 +348,10 @@ def uploaden():
             description = request.form.get("description")
 
             # put the directory in database
-            db.execute("INSERT INTO user_uploads (username, id, directory, description, filename) \
-                        VALUES (:username, :id, :directory, :description, :filename)", username = username, \
-                        id = session["user_id"], directory = os.path.join(username, filename), description=description, filename=filename)
+            db.execute("INSERT INTO user_uploads (username, id, directory, description, filename, filetype) \
+                        VALUES (:username, :id, :directory, :description, :filename, :filetype)", username = username, \
+                        id = session["user_id"], directory = os.path.join(username, filename), description = description,
+                        filename = filename, filetype = "notgif")
 
 
 
@@ -375,7 +376,9 @@ def gif():
 
         # get the user search request
         q = request.form.get("search")
-        limit = 1
+        limit = 25
+
+        gifs = []
 
         # ensure search query was submitted
         if not q:
@@ -387,18 +390,37 @@ def gif():
 
             # from the datafile extract the url of the gif
             for gif in api_response.data:
-                 gif_url = gif.embed_url
+                 gif_url = gifs.append(gif.images.fixed_height.url)
 
 
         except ApiException as e:
             print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
 
-        return render_template("gif_display.html", gif_url = gif_url)
+        return render_template("gif_display.html", gifs = gifs)
 
     else:
         return render_template("gif.html")
 
+@app.route("/gif_uploaden", methods=["GET", "POST"])
+@login_required
+def gif_uploaden():
 
+    if request.method == "POST":
+
+        # select username from user table
+        users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = session["user_id"])
+        username = users[0]["username"]
+
+        url = request.args.get("url")
+        description = request.form.get("description")
+
+        db.execute("INSERT INTO user_uploads (username, id, directory, description, filename, filetype) \
+                    VALUES (:username, :id, :directory, :description, :filename, :filetype)", username = username, \
+                   id = session["user_id"], directory = url, description = description, filename = url , filetype = "gif")
+
+        return redirect(url_for("index"))
+    else:
+        return render_template("gif.html")
 
 @app.route("/search", methods=["GET", "POST"])
 @login_required
@@ -430,7 +452,7 @@ def like():
     # get the filename of the picture that you want to like
     filename = request.args.get('filename')
 
-    # get the cuurent page of the user to redirect to when the button is pushed
+    # get the current page of the user to redirect to when the button is pushed
     current_page = (request.referrer)
 
     # check if user already has liked the picture
@@ -473,7 +495,7 @@ def dislike():
     # get the filename of the picture that you want to dislike
     filename = request.args.get('filename')
 
-    # get the cuurent page of the user to redirect to when the button is pushed
+    # get the current page of the user to redirect to when the button is pushed
     current_page = (request.referrer)
 
     # check if you already have liked the picture

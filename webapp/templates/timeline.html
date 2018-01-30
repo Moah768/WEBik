@@ -37,12 +37,18 @@
           <div class="row">
          <div class="col-sm-6" style="background-color:lightcyan;">
              <tbody>
-                 {% for info in timeline_photos %}
-                 <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
+                {% for info in timeline_photos %}
+
+                {% if info.filetype == "gif" %}
+                    <img src ="{{info.filename}}">
+
+                {% else %}
+                     <img src = "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
                 <p>
                     <b>{{info.username}}:</b> {{info.description}}
                     </br> +{{info.likes}}
                 </p>
+                {% endif %}
                 <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
 
                 <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
