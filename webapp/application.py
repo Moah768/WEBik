@@ -430,6 +430,9 @@ def like():
     # get the filename of the picture that you want to like
     filename = request.args.get('filename')
 
+    # get the cuurent page of the user to redirect to when the button is pushed
+    current_page = (request.referrer)
+
     # check if user already has liked the picture
     check_likes = db.execute("SELECT like FROM likes WHERE own_id = :id AND filename = :filename",
                             id = session["user_id"], filename = filename)
@@ -462,13 +465,16 @@ def like():
             db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
                     likes = total_likes, filename = filename)
 
-    return redirect(url_for("timeline"))
+    return redirect(current_page)
 
 @app.route("/dislike", methods=["GET", "POST"])
 @login_required
 def dislike():
     # get the filename of the picture that you want to dislike
     filename = request.args.get('filename')
+
+    # get the cuurent page of the user to redirect to when the button is pushed
+    current_page = (request.referrer)
 
     # check if you already have liked the picture
     check_likes = db.execute("SELECT like FROM likes WHERE own_id = :id AND filename = :filename",
@@ -495,7 +501,7 @@ def dislike():
             db.execute("UPDATE user_uploads SET likes = :likes - 1 WHERE filename = :filename",
                         likes = total_likes, filename = filename)
 
-    return redirect(url_for("timeline"))
+    return redirect(current_page)
 
 @app.route("/timeline", methods=["GET", "POST"])
 @login_required
