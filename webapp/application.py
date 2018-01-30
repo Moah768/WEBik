@@ -377,7 +377,7 @@ def gif():
         q = request.form.get("search")
         limit = 1
 
-         # ensure search query was submitted
+        # ensure search query was submitted
         if not q:
             return apology("missing query")
 
@@ -631,3 +631,7 @@ def bio():
     return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
 
 
+
+#@app.route("/add_comment", methods=["GET", "POST"])
+#@login_required
+#def add_comment():
