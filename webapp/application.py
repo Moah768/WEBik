@@ -369,7 +369,7 @@ def uploaden():
             path = os.path.join(UPLOAD_FOLDER, username)
             number_files = len(next(os.walk(path))[2])
             _, extension = os.path.splitext(file.filename)
-            filename = "{}{}{}".format(username, number_files, extension)
+            filename = "{}_{}{}".format(username, number_files, extension)
             file.save(os.path.join(path, filename))
 
             description = request.form.get("description")
@@ -644,7 +644,7 @@ def profile_picture():
             path = os.path.join(UPLOAD_FOLDER, username)
             number_files = len(next(os.walk(path))[2])
             _, extension = os.path.splitext(file.filename)
-            filename = "profilepic_{}{}{}".format(username, number_files, extension)
+            filename = "profilepic_{}_{}{}".format(username, number_files, extension)
             file.save(os.path.join(path, filename))
 
             # put the directory in database
