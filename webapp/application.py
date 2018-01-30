@@ -370,7 +370,7 @@ def uploaden():
             path = os.path.join(UPLOAD_FOLDER, username)
             number_files = len(next(os.walk(path))[2])
             _, extension = os.path.splitext(file.filename)
-            filename = "{}{}{}".format(username, number_files, extension)
+            filename = "{}_{}{}".format(username, number_files, extension)
             file.save(os.path.join(path, filename))
 
             description = request.form.get("description")
@@ -645,7 +645,7 @@ def profile_picture():
             path = os.path.join(UPLOAD_FOLDER, username)
             number_files = len(next(os.walk(path))[2])
             _, extension = os.path.splitext(file.filename)
-            filename = "profilepic_{}{}{}".format(username, number_files, extension)
+            filename = "profilepic_{}_{}{}".format(username, number_files, extension)
             file.save(os.path.join(path, filename))
 
             # put the directory in database
@@ -715,6 +715,7 @@ def add_comment():
 def show_comments():
     filename = request.args.get("filename")
     selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
+
     username_photo = selected_comments[0]["username_photo"]
     # search for full name to get back to profile
     select_fullname= db.execute("SELECT full_name FROM users WHERE username = :username_photo ", username_photo = username_photo)
