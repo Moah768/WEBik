@@ -80,6 +80,7 @@ def profile():
 
     user_profile = db.execute("SELECT * FROM user_uploads WHERE username=:username ORDER BY date DESC", username = username)
     user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE username=:username", username = username)
+
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
 
@@ -635,3 +636,37 @@ def bio():
         return render_template("bio.html")
 
     return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
+
+
+@app.route("/add_comment", methods=["GET", "POST"])
+@login_required
+def add_comment():
+    if request.method == "POST":
+        comment = request.form.get("add_comment")
+        if not request.form.get("add_comment"):
+            return apology("must fill in a comment")
+
+        else:
+            filename = request.args.get("filename")
+            username_photo = request.args.get("username")
+
+            userid = session["user_id"]
+            user_profile = db.execute("SELECT * FROM users WHERE id = :userid", userid = userid)
+            own_username = user_profile[0]["username"]
+
+            db.execute("INSERT INTO comments (own_username, username_photo, filename, comment) VALUES (:own_username, :username_photo, :filename, :comment)",\
+            own_username = own_username, username_photo = username_photo,  filename = filename, comment = comment)
+
+        selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
+
+        return render_template("show_comments.html", selected_comments = selected_comments )
+    else:
+        return render_template("add_comment.html")
+
+@app.route("/show_comments", methods=["GET", "POST"])
+@login_required
+def show_comments():
+    filename = request.args.get("filename")
+    selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
+
+    return render_template("show_comments.html", selected_comments = selected_comments )
