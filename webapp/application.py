@@ -377,7 +377,7 @@ def gif():
         q = request.form.get("search")
         limit = 1
 
-         # ensure search query was submitted
+        # ensure search query was submitted
         if not q:
             return apology("missing query")
 
