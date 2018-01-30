@@ -540,7 +540,9 @@ def timeline():
     profile_picture = user_info[0]["filename"]
     full_name = user_info[0]["full_name"]
     username = user_info[0]["username"]
-    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = userid)
+    users = db.execute("SELECT username, full_name FROM users")
+
+    userdict = {user["username"] : user["full_name"] for user in users}
 
     # counter for followers and following on the profile page of each users
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
@@ -557,7 +559,8 @@ def timeline():
 
     timeline_photos = db.execute("SELECT * FROM user_uploads WHERE id IN (:ids) ORDER BY date DESC", ids = test_ids)
     return render_template("timeline.html",full_name=full_name, username=username, timeline_photos=timeline_photos, bio=bio, \
-                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count, \
+                            users = userdict)
 
 
 @app.route("/settings", methods=["GET", "POST"])
@@ -578,9 +581,9 @@ def trending():
     profile_picture = user_info[0]["filename"]
     full_name = user_info[0]["full_name"]
     username = user_info[0]["username"]
-    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = userid)
+    users = db.execute("SELECT username, full_name FROM users")
 
-
+    userdict = {user["username"] : user["full_name"] for user in users}
 
     # counter for followers and following on the profile page of each users
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
@@ -595,7 +598,7 @@ def trending():
 
     return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos, bio=bio, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count, \
-                            users = users)
+                            users = userdict)
 
 
 @app.route("/delete", methods=["GET", "POST"])
