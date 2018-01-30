@@ -66,7 +66,19 @@ def index():
 
     file_info = db.execute("SElECT * FROM user_uploads WHERE id = :id ORDER BY date DESC", id = session["user_id"])
 
-    return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, profile_picture=profile_picture)
+    # counter for followers and following on the profile page of each users
+    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    id_username = id_username[0]["id"]
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_count = len(following_info)
+    followers_count = len(followers_info)
+
+
+
+
+    return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, \
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
@@ -78,13 +90,26 @@ def profile():
     full_name = request.args.get('username')
     username = request.args.get('fullname')
 
+
+    # counter for followers and following on the profile page of each users
+    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    id_username = id_username[0]["id"]
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_count = len(following_info)
+    followers_count = len(followers_info)
+
+
+
+
+
     user_profile = db.execute("SELECT * FROM user_uploads WHERE username=:username ORDER BY date DESC", username = username)
     user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE username=:username", username = username)
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
 
 
-    return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, profile_picture=profile_picture)
+    return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
 
 
 
@@ -516,14 +541,22 @@ def timeline():
     username = user_info[0]["username"]
     users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = userid)
 
+    # counter for followers and following on the profile page of each users
+    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    id_username = id_username[0]["id"]
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_count = len(following_info)
+    followers_count = len(followers_info)
+
 
     following_list = db.execute("SELECT following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
 
     (test_ids)=[d['following_id'] for d in following_list]
 
     timeline_photos = db.execute("SELECT * FROM user_uploads WHERE id IN (:ids) ORDER BY date DESC", ids = test_ids)
-    return render_template("timeline.html",full_name=full_name, username=username, timeline_photos=timeline_photos, \
-                            bio=bio, profile_picture=profile_picture)
+    return render_template("timeline.html",full_name=full_name, username=username, timeline_photos=timeline_photos, bio=bio, \
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
 
 
 @app.route("/settings", methods=["GET", "POST"])
@@ -546,10 +579,21 @@ def trending():
     username = user_info[0]["username"]
     users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = userid)
 
+
+
+    # counter for followers and following on the profile page of each users
+    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    id_username = id_username[0]["id"]
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_count = len(following_info)
+    followers_count = len(followers_info)
+
+
     trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
 
-    return render_template("trending.html", full_name = full_name, username = username, \
-                            trending_photos=trending_photos, bio=bio, profile_picture=profile_picture)
+    return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos, bio=bio, \
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
 
 
 @app.route("/delete", methods=["GET", "POST"])

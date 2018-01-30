@@ -19,11 +19,11 @@
 
             <div class="button-wrapper">
             <div class="col-sm-6">
-            <a href="/followers" class="button">Followers</a>
+            <a href="/followers" class="button">Followers: {{followers_count}} </a>
             </div>
 
             <div class="col-sm-6">
-            <a href="/following" class="button">Following</a>
+            <a href="/following" class="button">Following: {{following_count}} </a>
             </div>
 
             </div>
@@ -42,7 +42,9 @@
                  <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
                 <p>
                     <b>{{info.username}}:</b> {{info.description}}
-                    </br> +{{info.likes}}
+                    </br>
+                    +{{info.likes}}
+                    </br>
                     <td><a href="{{ url_for('delete')}}?filename={{info.filename}}",  class="button">Delete</a></td>
                         </div>
                  {% endfor %}
