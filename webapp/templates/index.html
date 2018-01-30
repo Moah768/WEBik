@@ -18,42 +18,39 @@
             </br>
 
             <div class="button-wrapper">
-            <div class="col-sm-6">
-            <a href="/followers" class="button">Followers</a>
+                <div class="col-sm-6">
+                <a href="/followers" class="button">Followers: {{followers_count}} </a>
+                </div>
+
+                <div class="col-sm-6">
+                <a href="/following" class="button">Following: {{following_count}} </a>
+                </div>
             </div>
-
-            <div class="col-sm-6">
-            <a href="/following" class="button">Following</a>
-            </div>
-
-            </div>
-
-
-          </br>
-          </br>
-
+            </br>
+            </br>
           </div>
-          <div class="col-sm-1 rounded">test</div>
+
           <div class="col-sm-8 rounded">
           <div class="row">
-         <div class="col-sm-6" style="background-color:lightcyan;">
+            <div class="col-sm-6" style="background-color:white;">
              <tbody>
                  {% for info in file_info %}
                  <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
-                <p>
-                    <b>{{info.username}}:</b> {{info.description}}
-                    </br> +{{info.likes}}
-                    <td><a href="{{ url_for('delete')}}?filename={{info.filename}}",  class="button">Delete</a></td>
-                        </div>
+                 <p>
+                     <b>{{info.username}}:</b> {{info.description}}
+                    </br>
+                    +{{info.likes}}
+                 </p>
+                 <td><a href="{{ url_for('delete')}}?filename={{info.filename}}",  class="button">Delete</a></td>
+                 </br>
+                 </br>
                  {% endfor %}
+             </tbody>
 
-                 </tbody>
-
-
-         </div>
-        <div class="col-sm-6" style="background-color:lightgray;">test</div>
-        </div>
-      </div>
+          </div>
+          <div class="col-sm-6">Feed</div>
+          </div>
+          </div>
     </div>
 
 
