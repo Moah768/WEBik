@@ -109,7 +109,8 @@ def profile():
     profile_picture = user_info[0]["filename"]
 
 
-    return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
+    return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, \
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
 
 
 
@@ -248,8 +249,8 @@ def change_password():
 
         # update new password in users
         else:
-            db.execute("UPDATE users SET hash = :new_hash WHERE  id = :current_user",\
-            new_hash = pwd_context.hash(request.form.get("new_password")), current_user = session["user_id"])
+            db.execute("UPDATE users SET hash = :new_hash WHERE  id = :current_user", new_hash = \
+                        pwd_context.hash(request.form.get("new_password")), current_user = session["user_id"])
 
         return redirect(url_for("index"))
 
@@ -324,11 +325,12 @@ def following():
     if username:
         id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
         id_username = id_username[0]["id"]
-        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = id_username)
 
     # your own profile
     else:
-        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = session["user_id"])
+        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = \
+                    session["user_id"])
 
     # print screen on page
     return render_template("following.html", users = following )
@@ -373,9 +375,9 @@ def uploaden():
             description = request.form.get("description")
 
             # put the directory in database
-            db.execute("INSERT INTO user_uploads (username, id, directory, description, filename) \
-                        VALUES (:username, :id, :directory, :description, :filename)", username = username, \
-                        id = session["user_id"], directory = os.path.join(username, filename), description=description, filename=filename)
+            db.execute("INSERT INTO user_uploads (username, id, directory, description, filename) VALUES (:username, :id, \
+                        :directory, :description, :filename)", username = username, id = session["user_id"], directory = \
+                        os.path.join(username, filename), description = description, filename = filename)
 
 
 
@@ -433,9 +435,8 @@ def search():
     if request.method == "POST":
 
         search_input = request.form.get("search_input")
-        filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id \
-                                    AND username LIKE :search_input OR full_name LIKE :search_input", \
-                                    id = session["user_id"], search_input=search_input+"%")
+        filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id  AND username LIKE :search_input OR \
+                                    full_name LIKE :search_input", id = session["user_id"], search_input = search_input+"%")
 
          # print screen on page
         return render_template("search.html", users = filter_users)
@@ -473,8 +474,7 @@ def like():
 
         # get total number of likes
         total_likes = check_likes_filename[0]["likes"]
-        db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
-                    likes = total_likes, filename = filename)
+        db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename", likes = total_likes, filename = filename)
 
     # if you already liked the picture
     else:
@@ -647,7 +647,8 @@ def profile_picture():
             file.save(os.path.join(path, filename))
 
             # put the directory in database
-            db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :id", new_profile_pic_directory = os.path.join(username, filename), filename = filename, id = session["user_id"])
+            db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :id",\
+                        new_profile_pic_directory = os.path.join(username, filename), filename = filename, id = session["user_id"])
 
             return redirect(url_for("bio"))
     else:
@@ -659,7 +660,8 @@ def remove_following():
 
     following_username = request.args.get('username')
 
-    remove_following = db.execute("DELETE FROM volgend WHERE own_id = :own_id AND following_username = :following_username", own_id = session["user_id"], following_username = following_username )
+    remove_following = db.execute("DELETE FROM volgend WHERE own_id = :own_id AND following_username = :following_username", \
+                                    own_id = session["user_id"], following_username = following_username )
 
     return redirect(url_for("following"))
 
