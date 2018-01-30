@@ -716,4 +716,4 @@ def show_comments():
     filename = request.args.get("filename")
     selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
 
-    return render_template("show_comments.html", selected_comments = selected_comments )
+    return render_template("show_comments.html", selected_comments = selected_comments)
