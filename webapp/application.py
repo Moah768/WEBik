@@ -376,23 +376,10 @@ def uploaden():
             description = request.form.get("description")
 
             # put the directory in database
-<<<<<<< HEAD
             db.execute("INSERT INTO user_uploads (username, id, directory, description, filename, filetype) \
                         VALUES (:username, :id, :directory, :description, :filename, :filetype)", username = username, \
                         id = session["user_id"], directory = os.path.join(username, filename), description = description,
                         filename = filename, filetype = "notgif")
-=======
-            db.execute("INSERT INTO user_uploads (username, id, directory, description, filename) VALUES (:username, :id, \
-                        :directory, :description, :filename)", username = username, id = session["user_id"], directory = \
-                        os.path.join(username, filename), description = description, filename = filename)
->>>>>>> 0ab7fd71ad12943ee174344241a65405844dd8ab
-
-
-
-
-
-
-
 
             return redirect(url_for("index"))
     else:
