@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Show Comments
+{% endblock %}
+
+{% block main %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Comment</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for comments in selected_comments %}
+            <tr>
+                <td>{{ comments.own_username}}</td>
+                <td>{{ comments.comment }}</td>
+            </tr>
+        {% endfor %}
+
+{% endblock %}
