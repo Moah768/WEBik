@@ -5,11 +5,18 @@
 {% endblock %}
 
 {% block main %}
+
+   <img src= "{{ url_for('uploaden')}}/{{username_photo}}/{{filename}}" >
+
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>User</th>
                 <th>Comment</th>
+<<<<<<< HEAD
+                <th>Date</th>
+=======
+>>>>>>> a968fc6f281402131449f1ea8b3e61798368e57e
             </tr>
         </thead>
         <tbody>
@@ -17,7 +24,14 @@
             <tr>
                 <td>{{ comments.own_username}}</td>
                 <td>{{ comments.comment }}</td>
+                <td>{{ comments.date }}</td>
             </tr>
         {% endfor %}
+        <tfoot>
+            <tr>
+         <a href="profile?fullname={{full_name}}&username={{username_photo}}"class="button">Go back to profile</a>
+            </tr>
+        </tfoot>
+    </table>
 
 {% endblock %}

@@ -711,7 +711,7 @@ def add_comment():
 
         return render_template("show_comments.html", selected_comments = selected_comments )
     else:
-        return render_template("add_comment.html")
+        return render_template("profile.html")
 
 @app.route("/show_comments", methods=["GET", "POST"])
 @login_required
@@ -719,4 +719,8 @@ def show_comments():
     filename = request.args.get("filename")
     selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
 
-    return render_template("show_comments.html", selected_comments = selected_comments)
+    username_photo = selected_comments[0]["username_photo"]
+    # search for full name to get back to profile
+    select_fullname= db.execute("SELECT full_name FROM users WHERE username = :username_photo ", username_photo = username_photo)
+    full_name =  select_fullname[0]["full_name"]
+    return render_template("show_comments.html", selected_comments = selected_comments, username_photo = username_photo, filename = filename, full_name = full_name)
