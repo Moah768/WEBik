@@ -66,7 +66,19 @@ def index():
 
     file_info = db.execute("SElECT * FROM user_uploads WHERE id = :id ORDER BY date DESC", id = session["user_id"])
 
-    return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, profile_picture=profile_picture)
+    # counter for followers and following on the profile page of each users
+    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    id_username = id_username[0]["id"]
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_count = len(following_info)
+    followers_count = len(followers_info)
+
+
+
+
+    return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, \
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
@@ -78,13 +90,28 @@ def profile():
     full_name = request.args.get('username')
     username = request.args.get('fullname')
 
+
+    # counter for followers and following on the profile page of each users
+    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    id_username = id_username[0]["id"]
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_count = len(following_info)
+    followers_count = len(followers_info)
+
+
+
+
+
     user_profile = db.execute("SELECT * FROM user_uploads WHERE username=:username ORDER BY date DESC", username = username)
     user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE username=:username", username = username)
+
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
 
 
-    return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, profile_picture=profile_picture)
+    return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, \
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
 
 
 
@@ -223,8 +250,8 @@ def change_password():
 
         # update new password in users
         else:
-            db.execute("UPDATE users SET hash = :new_hash WHERE  id = :current_user",\
-            new_hash = pwd_context.hash(request.form.get("new_password")), current_user = session["user_id"])
+            db.execute("UPDATE users SET hash = :new_hash WHERE  id = :current_user", new_hash = \
+                        pwd_context.hash(request.form.get("new_password")), current_user = session["user_id"])
 
         return redirect(url_for("index"))
 
@@ -299,11 +326,12 @@ def following():
     if username:
         id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
         id_username = id_username[0]["id"]
-        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = id_username)
 
     # your own profile
     else:
-        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = session["user_id"])
+        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = \
+                    session["user_id"])
 
     # print screen on page
     return render_template("following.html", users = following )
@@ -342,16 +370,22 @@ def uploaden():
             path = os.path.join(UPLOAD_FOLDER, username)
             number_files = len(next(os.walk(path))[2])
             _, extension = os.path.splitext(file.filename)
-            filename = "{}{}{}".format(username, number_files, extension)
+            filename = "{}_{}{}".format(username, number_files, extension)
             file.save(os.path.join(path, filename))
 
             description = request.form.get("description")
 
             # put the directory in database
+<<<<<<< HEAD
             db.execute("INSERT INTO user_uploads (username, id, directory, description, filename, filetype) \
                         VALUES (:username, :id, :directory, :description, :filename, :filetype)", username = username, \
                         id = session["user_id"], directory = os.path.join(username, filename), description = description,
                         filename = filename, filetype = "notgif")
+=======
+            db.execute("INSERT INTO user_uploads (username, id, directory, description, filename) VALUES (:username, :id, \
+                        :directory, :description, :filename)", username = username, id = session["user_id"], directory = \
+                        os.path.join(username, filename), description = description, filename = filename)
+>>>>>>> 0ab7fd71ad12943ee174344241a65405844dd8ab
 
 
 
@@ -430,9 +464,8 @@ def search():
     if request.method == "POST":
 
         search_input = request.form.get("search_input")
-        filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id \
-                                    AND username LIKE :search_input OR full_name LIKE :search_input", \
-                                    id = session["user_id"], search_input=search_input+"%")
+        filter_users = db.execute("SELECT username, full_name FROM users WHERE id != :id  AND username LIKE :search_input OR \
+                                    full_name LIKE :search_input", id = session["user_id"], search_input = search_input+"%")
 
          # print screen on page
         return render_template("search.html", users = filter_users)
@@ -470,8 +503,7 @@ def like():
 
         # get total number of likes
         total_likes = check_likes_filename[0]["likes"]
-        db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
-                    likes = total_likes, filename = filename)
+        db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename", likes = total_likes, filename = filename)
 
     # if you already liked the picture
     else:
@@ -536,7 +568,17 @@ def timeline():
     profile_picture = user_info[0]["filename"]
     full_name = user_info[0]["full_name"]
     username = user_info[0]["username"]
-    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = userid)
+    users = db.execute("SELECT username, full_name FROM users")
+
+    userdict = {user["username"] : user["full_name"] for user in users}
+
+    # counter for followers and following on the profile page of each users
+    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    id_username = id_username[0]["id"]
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_count = len(following_info)
+    followers_count = len(followers_info)
 
 
     following_list = db.execute("SELECT following_id FROM volgend WHERE own_id = :id", id = session["user_id"])
@@ -544,8 +586,9 @@ def timeline():
     (test_ids)=[d['following_id'] for d in following_list]
 
     timeline_photos = db.execute("SELECT * FROM user_uploads WHERE id IN (:ids) ORDER BY date DESC", ids = test_ids)
-    return render_template("timeline.html",full_name=full_name, username=username, timeline_photos=timeline_photos, \
-                            bio=bio, profile_picture=profile_picture)
+    return render_template("timeline.html",full_name=full_name, username=username, timeline_photos=timeline_photos, bio=bio, \
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count, \
+                            users = userdict)
 
 
 @app.route("/settings", methods=["GET", "POST"])
@@ -566,12 +609,24 @@ def trending():
     profile_picture = user_info[0]["filename"]
     full_name = user_info[0]["full_name"]
     username = user_info[0]["username"]
-    users = db.execute("SELECT username, full_name FROM users WHERE id = :id", id = userid)
+    users = db.execute("SELECT username, full_name FROM users")
+
+    userdict = {user["username"] : user["full_name"] for user in users}
+
+    # counter for followers and following on the profile page of each users
+    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    id_username = id_username[0]["id"]
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_count = len(following_info)
+    followers_count = len(followers_info)
+
 
     trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
 
-    return render_template("trending.html", full_name = full_name, username = username, \
-                            trending_photos=trending_photos, bio=bio, profile_picture=profile_picture)
+    return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos, bio=bio, \
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count, \
+                            users = userdict)
 
 
 @app.route("/delete", methods=["GET", "POST"])
@@ -621,11 +676,12 @@ def profile_picture():
             path = os.path.join(UPLOAD_FOLDER, username)
             number_files = len(next(os.walk(path))[2])
             _, extension = os.path.splitext(file.filename)
-            filename = "profilepic_{}{}{}".format(username, number_files, extension)
+            filename = "profilepic_{}_{}{}".format(username, number_files, extension)
             file.save(os.path.join(path, filename))
 
             # put the directory in database
-            db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :id", new_profile_pic_directory = os.path.join(username, filename), filename = filename, id = session["user_id"])
+            db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :id",\
+                        new_profile_pic_directory = os.path.join(username, filename), filename = filename, id = session["user_id"])
 
             return redirect(url_for("bio"))
     else:
@@ -637,7 +693,8 @@ def remove_following():
 
     following_username = request.args.get('username')
 
-    remove_following = db.execute("DELETE FROM volgend WHERE own_id = :own_id AND following_username = :following_username", own_id = session["user_id"], following_username = following_username )
+    remove_following = db.execute("DELETE FROM volgend WHERE own_id = :own_id AND following_username = :following_username", \
+                                    own_id = session["user_id"], following_username = following_username )
 
     return redirect(url_for("following"))
 
@@ -657,3 +714,41 @@ def bio():
         return render_template("bio.html")
 
     return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos)
+
+
+@app.route("/add_comment", methods=["GET", "POST"])
+@login_required
+def add_comment():
+    if request.method == "POST":
+        comment = request.form.get("add_comment")
+        if not request.form.get("add_comment"):
+            return apology("must fill in a comment")
+
+        else:
+            filename = request.args.get("filename")
+            username_photo = request.args.get("username")
+
+            userid = session["user_id"]
+            user_profile = db.execute("SELECT * FROM users WHERE id = :userid", userid = userid)
+            own_username = user_profile[0]["username"]
+
+            db.execute("INSERT INTO comments (own_username, username_photo, filename, comment) VALUES (:own_username, :username_photo, :filename, :comment)",\
+            own_username = own_username, username_photo = username_photo,  filename = filename, comment = comment)
+
+        selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
+
+        return render_template("show_comments.html", selected_comments = selected_comments )
+    else:
+        return render_template("profile.html")
+
+@app.route("/show_comments", methods=["GET", "POST"])
+@login_required
+def show_comments():
+    filename = request.args.get("filename")
+    selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
+
+    username_photo = selected_comments[0]["username_photo"]
+    # search for full name to get back to profile
+    select_fullname= db.execute("SELECT full_name FROM users WHERE username = :username_photo ", username_photo = username_photo)
+    full_name =  select_fullname[0]["full_name"]
+    return render_template("show_comments.html", selected_comments = selected_comments, username_photo = username_photo, filename = filename, full_name = full_name)
