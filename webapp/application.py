@@ -183,7 +183,7 @@ def register():
         session["user_id"] = rows[0]["id"]
 
         # redirect user to home page
-        return redirect(url_for("index"))
+        return redirect(url_for("profile_picture"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -599,7 +599,7 @@ def profile_picture():
             # put the directory in database
             db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :id", new_profile_pic_directory = os.path.join(username, filename), filename = filename, id = session["user_id"])
 
-            return redirect(url_for("index"))
+            return redirect(url_for("bio"))
     else:
         return render_template("profile_picture.html")
 
@@ -622,7 +622,7 @@ def bio():
             return apology("must fill in a bio")
 
         else:
-            db.execute("UPDATE users SET bio = :new_bio WHERE  id = :id", new_bio = request.form.get("bio"), id = session["user_id"])
+            db.execute("UPDATE users SET bio = :new_bio WHERE  id = :userid", new_bio = bio, userid = session["user_id"])
 
         return redirect(url_for("index"))
     else:
