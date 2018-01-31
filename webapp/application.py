@@ -50,7 +50,6 @@ def index():
 
     userid = session["user_id"]
 
-    user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
     file_info = db.execute("SElECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
 
     user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
@@ -59,8 +58,6 @@ def index():
     full_name = user_info[0]["full_name"]
     username = user_info[0]["username"]
     file_name = user_info[0]["filename"]
-
-
 
     # counter for followers and following on the profile page of each users
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
@@ -85,15 +82,26 @@ def index():
 def profile():
     """Weergeeft een index van een andere gebruiker"""
 
+<<<<<<< HEAD
     userid = session["user_id"]
     full_name = request.args.get('username')
     username = request.args.get('fullname')
+=======
+    full_name = request.args.get('fullname')
+    username = request.args.get('username')
+>>>>>>> 2510e28bf86b6969f647d11316bcc08adbe32683
 
-    # counter for followers and following on the profile page of each users
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
     id_username = id_username[0]["id"]
+<<<<<<< HEAD
     following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = id_username)
     followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id = id_username)
+=======
+
+    # fullname and username of your followers and users you follow
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+>>>>>>> 2510e28bf86b6969f647d11316bcc08adbe32683
 
     # counter for followers and following on the profile page of each users
     following_count = len(following_info)
@@ -105,13 +113,15 @@ def profile():
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
 
+<<<<<<< HEAD
     # for like and dislike button
     liked_filenames = liked_photos(userid)
 
+=======
+>>>>>>> 2510e28bf86b6969f647d11316bcc08adbe32683
     return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count,
                             liked_filenames = liked_filenames)
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -690,7 +700,7 @@ def profile_picture():
 
             # put the directory in database
             db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :userid",\
-                        new_profile_pic_directory = os.path.join(username, filename), filename = filename, userid = user_id)
+                        new_profile_pic_directory = os.path.join(username, filename), filename = filename, userid = userid)
 
             return redirect(url_for("bio"))
     else:
