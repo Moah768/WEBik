@@ -734,64 +734,60 @@ def bio():
 @app.route("/add_comment", methods=["GET", "POST"])
 @login_required
 def add_comment():
-
     if request.method == "POST":
-
+        # retrieve comment
         comment = request.form.get("add_comment")
-        if not comment:
+
+        # check if there is an input
+        if not request.form.get("add_comment"):
             return apology("must fill in a comment")
 
-        else:
-            filename = request.args.get("filename")
-            username_photo = request.args.get("username")
+        # retrieve filename image/gif
+        filename = request.args.get("filename")
 
-            userid = session["user_id"]
-            user_profile = db.execute("SELECT * FROM users WHERE id = :userid", userid = userid)
-            own_username = user_profile[0]["username"]
+        # retrieve uploaders name uploader from file
+        information_uploader = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
+        username_photo = information_uploader[0]["username"]
 
-            db.execute("INSERT INTO comments (own_username, username_photo, filename, comment) VALUES (:own_username, :username_photo, :filename, :comment)",\
-            own_username = own_username, username_photo = username_photo,  filename = filename, comment = comment)
+        # retrieve own username
+        users = db.execute("SELECT username FROM users WHERE id = :userid", userid = session["user_id"])
+        own_username = users[0]["username"]
 
+        # put everything in comment database
+        db.execute("INSERT INTO comments (own_username, username_photo, filename, comment) VALUES (:own_username,\
+                    :username_photo, :filename, :comment)",own_username = own_username, username_photo = username_photo,
+                    filename = filename, comment = comment)
 
-            selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
+        # retrieve info via filename from user_uploads
+        filetype = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
 
-           # if len(selected_comments) == 0:
-           #     return apology("no comments yet")
+        #retrieve username en full name from the uploaders photo's
+        username_photo = filetype[0]["username"]
+        user_info =  db.execute("SELECT * FROM users WHERE username = :username", username = username_photo)
+        full_name = user_info[0]["full_name"]
 
+        selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
 
-            username_photo = selected_comments[0]["username_photo"]
-
-            # search for full name to get back to profile
-            select_fullname= db.execute("SELECT full_name FROM users WHERE username = :username_photo ",
-                                        username_photo = username_photo)
-            full_name =  select_fullname[0]["full_name"]
-
-
-
-        return redirect(url_for("show_comments", filename=filename))
-        #return render_template("show_comments.html", selected_comments = selected_comments, username_photo = username_photo,
-                                #filename = filename, full_name = full_name, filetype = filetype)
+        return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo,
+                            selected_comments = selected_comments, full_name = full_name)
     else:
-        return render_template("profile.html")
+        return render_templare("index.html")
 
 @app.route("/show_comments", methods=["GET", "POST"])
 @login_required
 def show_comments():
-
+    # get filename
     filename = request.args.get("filename")
 
+    # retrieve info via filename from user_uploads
     filetype = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
+
+    #retrieve username en full name from the uploaders photo's
+    username_photo = filetype[0]["username"]
+    user_info =  db.execute("SELECT * FROM users WHERE username = :username", username = username_photo)
+    full_name = user_info[0]["full_name"]
 
     selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
 
-    if len(selected_comments) == 0:
-        return apology("no comments yet")
-
-
-    username_photo = selected_comments[0]["username_photo"]
-
-    # search for full name to get back to profile
-    select_fullname= db.execute("SELECT full_name FROM users WHERE username = :username_photo ", username_photo = username_photo)
-    full_name =  select_fullname[0]["full_name"]
-    return render_template("show_comments.html", selected_comments = selected_comments, username_photo = username_photo,
-                            filename = filename, full_name = full_name, filetype = filetype)
+    return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo,
+    selected_comments = selected_comments, full_name = full_name)
