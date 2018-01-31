@@ -1,11 +1,14 @@
 # WEBik
 
 # Technisch Ontwerp van FOODshow
-###Bibi Kok 11063394
-###Ahmed Moenna 11043768
-###Paul van der Pijl
 
-##BELANGRIJK VOOR GEBRUIK:"" pip install giphy client "" UITVOEREN
+### Bibi Kok 11063394
+
+### Ahmed Moenna 11043768
+
+### Paul van der Pijl
+
+## BELANGRIJK VOOR GEBRUIK:"" pip install giphy client "" UITVOEREN
 
 #### Controllers
 Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
