@@ -33,9 +33,9 @@
         </div>
         <div class="col-sm-8 rounded">
             <div class="row">
+                {% for info in trending_photos %}
                 <div class="col-sm-6" style="background-color:white;">
                     <tbody>
-                        {% for info in trending_photos %}
 
                         {% if info.filetype == "gif" %}
                             <img src ="{{info.filename}}">
@@ -71,11 +71,9 @@
                             </fieldset>
                             </br>
                             </br>
-                        {% endfor %}
-
                     </tbody>
                  </div>
-                 <div class="col-sm-6">Feed</div>
+                  {% endfor %}
             </div>
         </div>
     </div>
