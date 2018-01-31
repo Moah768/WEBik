@@ -288,9 +288,10 @@ def add_following():
 
     # request the name of the person who you want to follow
     username = request.args.get('username')
-
+    print(username)
     # acces the data of the user you want to follow in the database
     users = db.execute("SELECT full_name, username, id FROM users WHERE username = :username", username = username)
+    print(users)
     following_full_name = users[0]["full_name"]
     following_username = users[0]["username"]
     # id from user who you want to follow

@@ -21,9 +21,9 @@
                 <td>{{ i.own_username }}</td>
                 <td><a href="{{ url_for('profile') }}?fullname={{i.own_full_name}}&username={{i.own_username}}" class="button">View Profile</a></td>
                 {% if i.own_username in following_user %}
-                    <td><a href="{{ url_for('remove_following') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Unfollow</a></td>
+                    <td><a href="{{ url_for('remove_following') }}?fullname={{i.own_full_name}}&username={{i.own_username}}",  class="button">Unfollow</a></td>
                 {% else %}
-                    <td><a href="{{ url_for('add_following') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Follow</a></td>
+                    <td><a href="{{ url_for('add_following') }}?fullname={{i.own_full_name}}&username={{i.own_username}}",  class="button">Follow</a></td>
                 {% endif %}
             </tr>
 
