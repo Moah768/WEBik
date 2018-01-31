@@ -1,6 +1,12 @@
 # WEBik
 
-# Technisch Ontwerp
+# Technisch Ontwerp van FOODshow
+###Bibi Kok 11063394
+###Ahmed Moenna 11043768
+###Paul van der Pijl
+
+##BELANGRIJK VOOR GEBRUIK:"" pip install giphy client "" UITVOEREN
+
 #### Controllers
 Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
 
@@ -43,6 +49,8 @@ Schermen gegroepeerd en de links met pijlen aangegeven:
 <img src ="https://i.imgur.com/GncbGVc.jpg">
 <img src = "https://i.imgur.com/G3kh35f.jpg">
 <img src = "https://i.imgur.com/2rW5xuC.jpg">
+
+
 
 #### Models/Helpers
 Lijst van helper functie en hun omschrijving:
