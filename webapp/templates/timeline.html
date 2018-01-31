@@ -56,19 +56,6 @@
                                 <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
                             {% endif %}
 
-                            </br>
-                            </br>
-                            <td><a href="{{ url_for('show_comments')}}?filename={{info.filename}}",  class="button">Show Comments</a></td>
-                            <form action="{{ url_for('add_comment')}}?filename={{info.filename}}&username={{info.username}}" method="post">
-                            <fieldset>
-                                </br>
-                                <div class="form-group">
-                                    <input class="form-control" name="add_comment" placeholder="Add Comment" type="text"/>
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-default" type="submit">Add Comment</button>
-                                </div>
-                            </fieldset>
                     </tbody>
                 </div>
                 {% endfor %}

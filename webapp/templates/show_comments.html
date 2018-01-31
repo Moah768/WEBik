@@ -6,7 +6,28 @@
 
 {% block main %}
 
-   <img src= "{{ url_for('uploaden')}}/{{username_photo}}/{{filename}}" >
+    {% for i in filetype %}
+
+    {% if i.filetype == "gif" %}
+        <img src ="{{i.filename}}">
+
+    {% else %}
+        <img src= "{{ url_for('uploaden')}}/{{username_photo}}/{{filename}}" >
+    {% endif %}
+    {% endfor %}
+    </br>
+    </br>
+<!--
+    <form action="{{ url_for('add_comment')}}" method="post">
+        <fieldset>
+            <div class="form-group">
+                <input autocomplete="off" autofocus class="form-control" name="add_comment" placeholder="Add comment" type="text"/>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-default" type="submit">Add comment</button>
+            </div>
+        </fieldset>
+    </form>
 
     <table class="table table-striped">
         <thead>
@@ -31,5 +52,5 @@
             </tr>
         </tfoot>
     </table>
-
+-->
 {% endblock %}
