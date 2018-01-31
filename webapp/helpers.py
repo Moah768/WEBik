@@ -62,7 +62,7 @@ def following_users(userid):
 
 
 def get_id(username):
-    """ Gets current users id""""
+    """ Gets current users id"""
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
     id_username = id_username[0]["id"]
 
