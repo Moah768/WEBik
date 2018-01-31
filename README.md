@@ -10,6 +10,13 @@
 
 ## BELANGRIJK VOOR GEBRUIK:"" pip install giphy client "" UITVOEREN
 
+### Samenvatting
+Het doel van onze webapplicatie is om een overzicht te krijgen van afbeeldingen en gifjes die:
+1. op dit moment trending zijn
+2. door de mensen die jij volgt worden geplaatst
+
+Het idee is uniek omdat dit een webapplicatie is die gericht is op het delen van foto's met anderen en waarbij er een overzichtelijk aanbod wordt gegeven van meerdere foto's tegelijk. Zo kunnen bezoekers in een oogopslag beslissen welke foto's ze wel of niet interessant vinden. Verder kunnen bezoekers aangeven dat ze foto's leuk vinden door deze te 'liken', de meest gelikete foto's verschijnen op een aparte trending pagina.
+
 #### Controllers
 Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
 
