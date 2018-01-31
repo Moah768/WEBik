@@ -33,9 +33,10 @@
         </div>
         <div class="col-sm-8 rounded">
             <div class="row">
-                <div class="col-sm-6" style="background-color:white;">
+
+                {% for info in timeline_photos %}
+                <div class="col-sm-6" style="background-color:white;width:50%;">
                     <tbody>
-                        {% for info in timeline_photos %}
 
                         {% if info.filetype == "gif" %}
                             <img src ="{{info.filename}}">
@@ -47,10 +48,16 @@
                             <b><td><a href="{{ url_for('profile') }}?fullname={{users[info.username]}}&username={{info.username}}", class="link"> {{info.username}}:</a></td></b> {{info.description}}
                             </br> +{{info.likes}}
                             </p>
-                            <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
-                            <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
-                            <td><a href="{{ url_for('show_comments')}}?filename={{info.filename}}",  class="button">Show Comments</a></td>
 
+                            {% if info.filename not in liked_filenames %}
+                                <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
+                            {% else %}
+                                <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
+                            {% endif %}
+
+                            </br>
+                            </br>
+                            <td><a href="{{ url_for('show_comments')}}?filename={{info.filename}}",  class="button">Show Comments</a></td>
                             <form action="{{ url_for('add_comment')}}?filename={{info.filename}}&username={{info.username}}" method="post">
                             <fieldset>
                                 </br>
@@ -61,11 +68,9 @@
                                     <button class="btn btn-default" type="submit">Add Comment</button>
                                 </div>
                             </fieldset>
-                        {% endfor %}
-
                     </tbody>
                 </div>
-                <div class="col-sm-6">Feed</div>
+                {% endfor %}
             </div>
         </div>
     </div>

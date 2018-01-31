@@ -4,12 +4,10 @@ from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 
-
 # added for uploading files
 import os
 from werkzeug.utils import secure_filename
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif'])
-
 
 import datetime
 import giphy_client
@@ -21,7 +19,6 @@ import json
 
 # configure application
 app = Flask(__name__)
-
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -53,18 +50,13 @@ def index():
 
     userid = session["user_id"]
 
-    user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
+    file_info = db.execute("SElECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
     user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
     full_name = user_info[0]["full_name"]
     username = user_info[0]["username"]
-    users = db.execute("SELECT username, full_name FROM users WHERE id = :userid", userid = userid)
-
-
-    filename = db.execute("SELECT username FROM users WHERE id = :userid", userid = userid)
-
-    file_info = db.execute("SElECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
+    file_name = user_info[0]["filename"]
 
     # counter for followers and following on the profile page of each users
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
@@ -75,22 +67,28 @@ def index():
     followers_count = len(followers_info)
 
 
-
+    # for like and dislike button
+    liked_filenames = liked_photos(userid)
 
     return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, \
-                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count,
+                            liked_filenames = liked_filenames)
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
     """Weergeeft een index van een andere gebruiker"""
 
+    userid = session["user_id"]
     full_name = request.args.get('username')
     username = request.args.get('fullname')
 
-    # counter for followers and following on the profile page of each users
-    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
-    id_username = id_username[0]["id"]
+    user_info = db.execute("SELECT bio, filename, full_name, username, id  FROM users WHERE username=:username", username = username)
+    id_username = user_info[0]["id"]
+    bio = user_info[0]['bio']
+    profile_picture = user_info[0]["filename"]
+
+    # fullname and username of your followers and users you follow
     following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
     followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
 
@@ -99,18 +97,13 @@ def profile():
     followers_count = len(followers_info)
 
     user_profile = db.execute("SELECT * FROM user_uploads WHERE username=:username ORDER BY date DESC", username = username)
-    user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE username=:username", username = username)
 
-    bio = user_info[0]['bio']
-    profile_picture = user_info[0]["filename"]
-
+    # for like and dislike button
+    liked_filenames = liked_photos(userid)
 
     return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, \
-                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
-
-
-
-
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count,
+                            liked_filenames = liked_filenames)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -161,6 +154,11 @@ def logout():
 def register():
     """Register user."""
 
+    full_name = request.form.get("full_name")
+    username = request.form.get("username")
+    password = request.form.get("password")
+    password_control = request.form.get("password_control")
+
     # forget any user_id
     session.clear()
 
@@ -168,38 +166,38 @@ def register():
     if request.method == "POST":
 
         # ensure password was submitted
-        if not request.form.get("full_name"):
+        if not full_name:
             return apology("must provide full name")
 
         # ensure username was submitted
-        elif not request.form.get("username"):
+        elif not username:
             return apology("must provide username")
 
         # ensure password was submitted
-        elif not request.form.get("password"):
+        elif not password:
             return apology("must provide password")
 
         # ensure password control was submitted
-        elif not request.form.get("password_control"):
+        elif not password_control:
             return apology("must provide password control")
 
         # ensures password is the same as password control
-        elif not request.form.get("password") == request.form.get("password_control"):
+        elif not password == password_control:
             return apology("Password control must be the same as password")
 
         # hashing the password
-        hash = pwd_context.hash(request.form.get("password"))
+        hash = pwd_context.hash(password)
 
         # inserts the new user in to the users together with the hash of the password
         insert_username = db.execute("INSERT INTO users (username, hash, full_name) VALUES (:username, :hash, :full_name)",\
-        username = request.form.get("username"), hash=hash, full_name = request.form.get("full_name") )
+        username = username, hash=hash, full_name = full_name )
 
         # if username is already taken in users
         if not insert_username:
             return apology("Username has been taken")
 
         # query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+        rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
         # remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -210,6 +208,27 @@ def register():
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("register.html")
+
+#
+#
+#
+#
+# TOT HIER HEB IK DE CODE GECONTROLEERD
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
+
+
+
+
 
 
 @app.route("/change_password", methods=["GET", "POST"])
@@ -318,6 +337,7 @@ def following():
     """Displays a list with all the users that you are following"""
     userid = session["user_id"]
 
+    userid = session["user_id"]
     # check if you are going to look at another profile's list of following or your own list
     username = request.args.get('username')
 
@@ -338,6 +358,7 @@ def following():
 @app.route("/uploaden", methods=["GET", "POST"])
 @login_required
 def uploaden():
+    """Upload a picture to your profile"""
     userid = session["user_id"]
 
     if request.method == "POST":
@@ -389,6 +410,7 @@ def uploaden():
 @login_required
 def gif():
 
+
     if request.method == "POST":
 
         api_instance = giphy_client.DefaultApi()
@@ -425,6 +447,7 @@ def gif():
 @app.route("/gif_uploaden", methods=["GET", "POST"])
 @login_required
 def gif_uploaden():
+    """Upload GIF to your profile"""
     userid = session["user_id"]
 
     if request.method == "POST":
@@ -511,12 +534,12 @@ def like():
             db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
                     likes = total_likes, filename = filename)
 
-
     return redirect(current_page)
 
 @app.route("/dislike", methods=["GET", "POST"])
 @login_required
 def dislike():
+
     userid = session["user_id"]
     # get the filename of the picture that you want to dislike
     filename = request.args.get('filename')
@@ -581,10 +604,13 @@ def timeline():
 
     (test_ids)=[d['following_id'] for d in following_list]
 
+
+    liked_filenames = liked_photos(userid)
+
     timeline_photos = db.execute("SELECT * FROM user_uploads WHERE id IN (:ids) ORDER BY date DESC", ids = test_ids)
     return render_template("timeline.html",full_name=full_name, username=username, timeline_photos=timeline_photos, bio=bio, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count, \
-                            users = userdict)
+                            users = userdict, liked_filenames = liked_filenames)
 
 
 @app.route("/settings", methods=["GET", "POST"])
@@ -621,9 +647,12 @@ def trending():
 
     trending_photos = db.execute("SELECT * FROM user_uploads ORDER BY likes DESC")
 
+    # for like and dislike button
+    liked_filenames = liked_photos(userid)
+
     return render_template("trending.html", full_name = full_name, username = username, trending_photos=trending_photos, bio=bio, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count, \
-                            users = userdict)
+                            users = userdict, liked_filenames = liked_filenames)
 
 
 @app.route("/delete", methods=["GET", "POST"])
@@ -680,7 +709,7 @@ def profile_picture():
 
             # put the directory in database
             db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :userid",\
-                        new_profile_pic_directory = os.path.join(username, filename), filename = filename, userid = user_id)
+                        new_profile_pic_directory = os.path.join(username, filename), filename = filename, userid = userid)
 
             return redirect(url_for("bio"))
     else:
