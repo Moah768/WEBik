@@ -1,10 +1,11 @@
 import csv
 import urllib.request
-
+from cs50 import SQL
 
 from flask import redirect, render_template, request, session
 from functools import wraps
-
+# configure CS50 Library to use SQLite database
+db = SQL("sqlite:///webik.db")
 
 #added for uploading images
 # added for uploading files
@@ -46,3 +47,12 @@ def login_required(f):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def liked_photos(userid):
+
+    filenames = db.execute("SELECT filename FROM likes WHERE own_id = :userid and like = 1", userid = userid)
+
+    liked_filenames = [filename["filename"] for filename in filenames]
+
+    return liked_filenames

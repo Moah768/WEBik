@@ -41,10 +41,9 @@
 
         <div class="col-sm-8 rounded">
             <div class="row">
+                {% for info in user_profile %}
                 <div class="col-sm-6" style="background-color:white;">
                     <tbody>
-                        {% for info in user_profile %}
-
                         {% if info.filetype == "gif" %}
                             <img src ="{{info.filename}}">
 
@@ -57,9 +56,11 @@
                             </br>
                             +{{info.likes}}
                             </p>
-
-                            <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
-                            <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
+                            {% if info.filename not in liked_filenames %}
+                                <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
+                            {% else %}
+                                <td><a href="{{ url_for('dislike')}}?filename={{info.filename}}",  class="button">Dislike</a></td>
+                            {% endif %}
                             <td><a href="{{ url_for('show_comments')}}?filename={{info.filename}}",  class="button">Show Comments</a></td>
                             <form action="{{ url_for('add_comment')}}?filename={{info.filename}}&username={{info.username}}" method="post">
                             <fieldset>
@@ -72,9 +73,9 @@
                                     <button class="btn btn-default" type="submit">Add Comment</button>
                                 </div>
                             </fieldset>
-                        {% endfor %}
                     </tbody>
                 </div>
+                {% endfor %}
             </div>
             <div class="col-sm-6">Feed</div>
         </div>

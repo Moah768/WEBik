@@ -74,25 +74,27 @@ def index():
     following_count = len(following_info)
     followers_count = len(followers_info)
 
-
-
+    # for like and dislike button
+    liked_filenames = liked_photos(userid)
 
     return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, \
-                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count,
+                            liked_filenames = liked_filenames)
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
     """Weergeeft een index van een andere gebruiker"""
 
+    userid = session["user_id"]
     full_name = request.args.get('username')
     username = request.args.get('fullname')
 
     # counter for followers and following on the profile page of each users
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
     id_username = id_username[0]["id"]
-    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
-    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id = id_username)
 
     # counter for followers and following on the profile page of each users
     following_count = len(following_info)
@@ -104,9 +106,12 @@ def profile():
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
 
+    # for like and dislike button
+    liked_filenames = liked_photos(userid)
 
     return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, \
-                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
+                            profile_picture=profile_picture, following_count=following_count, followers_count=followers_count,
+                            liked_filenames = liked_filenames)
 
 
 
@@ -317,6 +322,7 @@ def add_following():
 def following():
     """Displays a list with all the users that you are following"""
 
+    userid = session["user_id"]
     # check if you are going to look at another profile's list of following or your own list
     username = request.args.get('username')
 
@@ -579,10 +585,13 @@ def timeline():
 
     (test_ids)=[d['following_id'] for d in following_list]
 
+
+    liked_filenames = liked_photos(userid)
+
     timeline_photos = db.execute("SELECT * FROM user_uploads WHERE id IN (:ids) ORDER BY date DESC", ids = test_ids)
     return render_template("timeline.html",full_name=full_name, username=username, timeline_photos=timeline_photos, bio=bio, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count, \
-                            users = userdict)
+                            users = userdict, liked_filenames = liked_filenames)
 
 
 @app.route("/settings", methods=["GET", "POST"])
