@@ -56,9 +56,10 @@ Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
 #### Views
 Test
 Schermen gegroepeerd en de links met pijlen aangegeven:
-<img src ="https://i.imgur.com/GncbGVc.jpg">
-<img src = "https://i.imgur.com/G3kh35f.jpg">
-<img src = "https://i.imgur.com/2rW5xuC.jpg">
+<img src ="screenshots/Inloggen.png">
+<img src = "screenshots/Registreren.png">
+<img src = "screenshots/Trending.png">
+<img src = "screenshots/Volgers.png">
 
 
 
