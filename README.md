@@ -43,14 +43,22 @@ Schermen gegroepeerd en de links met pijlen aangegeven:
 <img src ="https://i.imgur.com/GncbGVc.jpg">
 <img src = "https://i.imgur.com/G3kh35f.jpg">
 <img src = "https://i.imgur.com/2rW5xuC.jpg">
+
 #### Models/Helpers
 Lijst van helper functie en hun omschrijving:
-* **like():** de like functie moet je op bijna elke pagina wel kunnen gebruiken. er zijn namelijk veel verschillende profielen waarvan je een foto moet kunnen like
-* **apology():** Bij foutief inloggen of registreren krijg je een foutmelding.
+* **apology():** Bij fouten op de webapplicatie krijg je een foutmelding.
+* **login_required():** Maakt route waarbij inloggen verplicht is
+* **allowed_file():** Controleer of file toegestaan is
+* **get_id():** Geeft de huidige gebruikers id
+* **following_users():** Geeft gebruikers die de huidige gebruiker volgen
+* **liked_photos():** Geeft gelikete fotos terug.
+
+
+
+
 #### Plugins/Frameworks
 Een korte lijst van plugins en frameworks:
 * Navigatie-bar: http://getbootstrap.com/docs/4.0/components/navbar/
 * buttons: http://getbootstrap.com/docs/4.0/components/buttons/
-* Avatars: https://www.w3schools.com/howto/howto_css_image_avatar.asp
 * GIF’s: https://developers.giphy.com/docs/
 
