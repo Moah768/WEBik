@@ -67,12 +67,10 @@ def index():
     following_count = len(following_info)
     followers_count = len(followers_info)
 
-<<<<<<< HEAD
+
     # for like and dislike button
     liked_filenames = liked_photos(userid)
 
-=======
->>>>>>> 00c313ff72514711a1a29695c4e3e169a9b38f76
     return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count,
                             liked_filenames = liked_filenames)
@@ -82,26 +80,16 @@ def index():
 def profile():
     """Weergeeft een index van een andere gebruiker"""
 
-<<<<<<< HEAD
     userid = session["user_id"]
     full_name = request.args.get('username')
     username = request.args.get('fullname')
-=======
-    full_name = request.args.get('fullname')
-    username = request.args.get('username')
->>>>>>> 2510e28bf86b6969f647d11316bcc08adbe32683
 
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
     id_username = id_username[0]["id"]
-<<<<<<< HEAD
-    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = id_username)
-    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id = id_username)
-=======
 
     # fullname and username of your followers and users you follow
     following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
     followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
->>>>>>> 2510e28bf86b6969f647d11316bcc08adbe32683
 
     # counter for followers and following on the profile page of each users
     following_count = len(following_info)
@@ -113,12 +101,9 @@ def profile():
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
 
-<<<<<<< HEAD
     # for like and dislike button
     liked_filenames = liked_photos(userid)
 
-=======
->>>>>>> 2510e28bf86b6969f647d11316bcc08adbe32683
     return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count,
                             liked_filenames = liked_filenames)
@@ -531,6 +516,7 @@ def like():
 @app.route("/dislike", methods=["GET", "POST"])
 @login_required
 def dislike():
+
     userid = session["user_id"]
     # get the filename of the picture that you want to dislike
     filename = request.args.get('filename')
