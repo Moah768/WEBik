@@ -56,3 +56,20 @@ def liked_photos(userid):
     liked_filenames = [filename["filename"] for filename in filenames]
 
     return liked_filenames
+
+
+
+def following_users(userid):
+
+    following = db.execute("SELECT following_username FROM volgend WHERE own_id = :userid", userid = userid)
+    following_users = [user["following_username"] for user in following]
+
+    return following_users
+
+
+def get_id(username):
+
+    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
+    id_username = id_username[0]["id"]
+
+    return id_username

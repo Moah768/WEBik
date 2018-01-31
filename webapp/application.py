@@ -50,7 +50,7 @@ def index():
 
     userid = session["user_id"]
 
-    file_info = db.execute("SElECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
+    file_info = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
     user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
@@ -59,10 +59,9 @@ def index():
     file_name = user_info[0]["filename"]
 
     # counter for followers and following on the profile page of each users
-    id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
-    id_username = id_username[0]["id"]
-    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
-    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :userid",
+                                userid = userid)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :userid", userid = userid)
     following_count = len(following_info)
     followers_count = len(followers_info)
 
@@ -82,6 +81,7 @@ def profile():
     userid = session["user_id"]
     full_name = request.args.get('username')
     username = request.args.get('fullname')
+    following_user = following_users(userid)
 
     user_info = db.execute("SELECT bio, filename, full_name, username, id  FROM users WHERE username=:username", username = username)
     id_username = user_info[0]["id"]
@@ -89,8 +89,10 @@ def profile():
     profile_picture = user_info[0]["filename"]
 
     # fullname and username of your followers and users you follow
-    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id= id_username)
-    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
+    following_info = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :own_id",
+                                own_id= id_username)
+    followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :following_id",
+                                following_id= id_username)
 
     # counter for followers and following on the profile page of each users
     following_count = len(following_info)
@@ -103,11 +105,13 @@ def profile():
 
     return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count,
-                            liked_filenames = liked_filenames)
+                            liked_filenames = liked_filenames, following_user=following_user)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in."""
+
+    username = request.form.get("username")
 
     # forget any user_id
     session.clear()
@@ -116,7 +120,7 @@ def login():
     if request.method == "POST":
 
         # ensure username was submitted
-        if not request.form.get("username"):
+        if not username:
             return apology("must provide username")
 
         # ensure password was submitted
@@ -124,7 +128,7 @@ def login():
             return apology("must provide password")
 
         # query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+        rows = db.execute("SELECT * FROM users WHERE username = :username", username = username)
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
@@ -190,14 +194,14 @@ def register():
 
         # inserts the new user in to the users together with the hash of the password
         insert_username = db.execute("INSERT INTO users (username, hash, full_name) VALUES (:username, :hash, :full_name)",\
-        username = username, hash=hash, full_name = full_name )
+        username = username, hash = hash, full_name = full_name )
 
         # if username is already taken in users
         if not insert_username:
             return apology("Username has been taken")
 
         # query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
+        rows = db.execute("SELECT * FROM users WHERE username = :username", username = username)
 
         # remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -208,28 +212,6 @@ def register():
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("register.html")
-
-#
-#
-#
-#
-# TOT HIER HEB IK DE CODE GECONTROLEERD
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-
-
-
-
-
-
 
 @app.route("/change_password", methods=["GET", "POST"])
 @login_required
@@ -280,21 +262,23 @@ def followers():
     """Displays a list with all the followers of the user"""
     userid = session["user_id"]
 
+    following_user = following_users(userid)
+
     # check if you are going to look at another profile's list of followers or your own list
     username = request.args.get('username')
 
     # if you are going to watch another profile's list get the data of that profile
     if username:
-        id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
-        id_username = id_username[0]["id"]
-        followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id = id_username)
+        id_username = get_id(username)
+        followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :following_id",
+                                following_id = id_username)
 
     # get the data of your own profile
     else:
         followers = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :userid", userid = userid)
 
     # print screen on page
-    return render_template("followers.html", users = followers )
+    return render_template("followers.html", users = followers, following_user=following_user)
 
 @app.route("/add_following", methods=["GET", "POST"])
 @login_required
@@ -328,31 +312,33 @@ def add_following():
                     own_username = own_username , following_username = following_username , own_id = userid,
                     following_id = following_id, own_full_name = own_full_name , following_full_name = following_full_name )
 
-
     return redirect(url_for("following"))
 
 @app.route("/following", methods=["GET", "POST"])
 @login_required
 def following():
     """Displays a list with all the users that you are following"""
-    userid = session["user_id"]
 
     userid = session["user_id"]
+
     # check if you are going to look at another profile's list of following or your own list
     username = request.args.get('username')
 
     # another profile's list
     if username:
-        id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
-        id_username = id_username[0]["id"]
-        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :id", id = id_username)
+        id_username = get_id(username)
+        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :own_id",
+                                own_id = id_username)
 
     # your own profile
     else:
-        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :userid", userid = userid)
+        following = db.execute("SELECT following_username, following_full_name FROM volgend WHERE own_id = :userid",
+                                userid = userid)
+
+
 
     # print screen on page
-    return render_template("following.html", users = following )
+    return render_template("following.html", users = following)
 
 
 @app.route("/uploaden", methods=["GET", "POST"])
@@ -396,11 +382,9 @@ def uploaden():
             description = request.form.get("description")
 
             # put the directory in database
-            db.execute("INSERT INTO user_uploads (username, id, directory, description, filename, filetype) \
-                        VALUES (:username, :id, :directory, :description, :filename, :filetype)", username = username, \
-                        id = userid, directory = os.path.join(username, filename), description = description,
-                        filename = filename, filetype = "notgif")
-
+            db.execute("INSERT INTO user_uploads (username, id, directory, description, filename, filetype) VALUES (:username, \
+                        :userid, :directory, :description, :filename, :filetype)", username = username, userid = userid, directory \
+                        = os.path.join(username, filename), description = description, filename = filename, filetype = "notgif")
 
             return redirect(url_for("index"))
     else:
@@ -409,10 +393,9 @@ def uploaden():
 @app.route("/gif", methods=["GET", "POST"])
 @login_required
 def gif():
-
+    """ Get GIF from database/giphy"""
 
     if request.method == "POST":
-
         api_instance = giphy_client.DefaultApi()
         # giphy public api key
         api_key = "dc6zaTOxFJmzC"
@@ -421,6 +404,7 @@ def gif():
         q = request.form.get("search")
         limit = 25
 
+        # list with al GIF's url
         gifs = []
 
         # ensure search query was submitted
@@ -434,7 +418,6 @@ def gif():
             # from the datafile extract the url of the gif
             for gif in api_response.data:
                  gif_url = gifs.append(gif.images.fixed_height.url)
-
 
         except ApiException as e:
             print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
@@ -451,7 +434,6 @@ def gif_uploaden():
     userid = session["user_id"]
 
     if request.method == "POST":
-
         # select username from user table
         users = db.execute("SELECT username, full_name FROM users WHERE id = :userid", userid = userid)
         username = users[0]["username"]
@@ -460,8 +442,8 @@ def gif_uploaden():
         description = request.form.get("description")
 
         db.execute("INSERT INTO user_uploads (username, id, directory, description, filename, filetype)  VALUES (:username, :userid, \
-                    :directory, :description, :filename, :filetype)", username = username, userid = userid, directory = \
-                    url, description = description, filename = url , filetype = "gif")
+                    :directory, :description, :filename, :filetype)", username = username, userid = userid, directory = url, \
+                    description = description, filename = url , filetype = "gif")
 
         return redirect(url_for("index"))
     else:
@@ -473,6 +455,8 @@ def search():
     """Weergeeft een tabel met alle gebruikers"""
     userid = session["user_id"]
 
+    following_user = following_users(userid)
+
     if request.method == "POST":
 
         search_input = request.form.get("search_input")
@@ -480,7 +464,7 @@ def search():
                                     full_name LIKE :search_input", userid = userid, search_input = search_input+"%")
 
          # print screen on page
-        return render_template("search.html", users = filter_users)
+        return render_template("search.html", users = filter_users, following_user=following_user)
     else:
         return render_template("search.html")
 
@@ -488,8 +472,6 @@ def search():
 @app.route('/uploaden/<user>/<filename>')
 def uploaded_file(user, filename):
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], user), filename)
-
-
 
 @app.route("/like", methods=["GET", "POST"])
 @login_required
@@ -518,7 +500,8 @@ def like():
 
         # get total number of likes
         total_likes = check_likes_filename[0]["likes"]
-        db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename", likes = total_likes, filename = filename)
+        db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
+                    likes = total_likes, filename = filename)
 
     # if you already liked the picture
     else:
@@ -751,9 +734,11 @@ def bio():
 @app.route("/add_comment", methods=["GET", "POST"])
 @login_required
 def add_comment():
+
     if request.method == "POST":
+
         comment = request.form.get("add_comment")
-        if not request.form.get("add_comment"):
+        if not comment:
             return apology("must fill in a comment")
 
         else:
@@ -769,27 +754,37 @@ def add_comment():
 
 
             selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
-            if len(selected_comments) == 0:
-                return apology("no comments yet")
+
+           # if len(selected_comments) == 0:
+           #     return apology("no comments yet")
 
 
             username_photo = selected_comments[0]["username_photo"]
 
             # search for full name to get back to profile
-            select_fullname= db.execute("SELECT full_name FROM users WHERE username = :username_photo ", username_photo = username_photo)
+            select_fullname= db.execute("SELECT full_name FROM users WHERE username = :username_photo ",
+                                        username_photo = username_photo)
             full_name =  select_fullname[0]["full_name"]
 
-        return render_template("show_comments.html", selected_comments = selected_comments, username_photo = username_photo, filename = filename, full_name = full_name)
+
+
+        return redirect(url_for("show_comments", filename=filename))
+        #return render_template("show_comments.html", selected_comments = selected_comments, username_photo = username_photo,
+                                #filename = filename, full_name = full_name, filetype = filetype)
     else:
         return render_template("profile.html")
 
 @app.route("/show_comments", methods=["GET", "POST"])
 @login_required
 def show_comments():
+
     filename = request.args.get("filename")
 
+    filetype = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
+    print(filetype)
 
     selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
+
     if len(selected_comments) == 0:
         return apology("no comments yet")
 
@@ -799,4 +794,5 @@ def show_comments():
     # search for full name to get back to profile
     select_fullname= db.execute("SELECT full_name FROM users WHERE username = :username_photo ", username_photo = username_photo)
     full_name =  select_fullname[0]["full_name"]
-    return render_template("show_comments.html", selected_comments = selected_comments, username_photo = username_photo, filename = filename, full_name = full_name)
+    return render_template("show_comments.html", selected_comments = selected_comments, username_photo = username_photo,
+                            filename = filename, full_name = full_name, filetype = filetype)

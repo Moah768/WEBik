@@ -6,28 +6,6 @@
 
 {% block main %}
     <table class="table table-striped">
-        <style>
-            tfoot {color:red;}
-        </style>
-
-<!--
-        <thead>
-            <tr>
-                <form action="{{ url_for('search') }}" method="post">
-                    <fieldset>
-                        <div class="form-group">
-                        <input autocomplete="off" autofocus class="form-control" name="search_input" placeholder="Name or Username" type="text"/>
-                        </div>
-                        <div class="form-group">
-                        <button class="btn btn-default" type="submit">Search</button>
-                        </div>
-                    </fieldset>
-                </form>
-            </tr>
-        </thead>
--->
-
-
         <thead>
             <tr>
                 <th>Naam</th>
@@ -42,8 +20,12 @@
                 <td>{{ i.full_name }}</td>
                 <td>{{ i.username }}</td>
                 <td><a href="{{ url_for('profile') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Bekijk profiel</a></td>
-                <td><a href="{{ url_for('add_following') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Volg profiel</a></td>
-                <td><a href="{{ url_for('remove_following') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Ontvolg profiel</a></td>
+
+                {% if i.username in following_user %}
+                    <td><a href="{{ url_for('remove_following') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Ontvolg profiel</a></td>
+                {% else %}
+                    <td><a href="{{ url_for('add_following') }}?fullname={{i.full_name}}&username={{i.username}}",  class="button">Volg profiel</a></td>
+                {% endif %}
             </tr>
 
 
