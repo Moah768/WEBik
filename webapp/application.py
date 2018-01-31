@@ -380,6 +380,7 @@ def uploaden():
                         id = userid, directory = os.path.join(username, filename), description = description,
                         filename = filename, filetype = "notgif")
 
+
             return redirect(url_for("index"))
     else:
         return render_template("uploaden.html")
