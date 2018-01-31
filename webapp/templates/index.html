@@ -33,7 +33,14 @@
                 <div class="col-sm-6" style="background-color:white;">
                     <tbody>
                         {% for info in file_info %}
-                        <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
+
+                        {% if info.filetype == "gif" %}
+                            <img src ="{{info.filename}}">
+
+                        {% else %}
+                            <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
+
+                        {% endif %}
                         <p>
                             <b>{{info.username}}:</b> {{info.description}}
                             </br>
@@ -47,6 +54,7 @@
                 </div>
                 <div class="col-sm-6">Feed</div>
             </div>
+
         </div>
     </div>
 

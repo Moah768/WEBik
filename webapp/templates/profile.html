@@ -37,19 +37,22 @@
                 </div>
             </div>
 
-          </br>
-          </br>
-
-          </div>
-
 
         </div>
+
         <div class="col-sm-8 rounded">
             <div class="row">
                 <div class="col-sm-6" style="background-color:white;">
                     <tbody>
                         {% for info in user_profile %}
+
+                        {% if info.filetype == "gif" %}
+                            <img src ="{{info.filename}}">
+
+                        {% else %}
                             <img src= "{{ url_for('uploaden')}}/{{info.username}}/{{info.filename}}" >
+
+                        {% endif %}
                             <p>
                             <b>{{info.username}}:</b> {{info.description}}
                             </br>
@@ -61,6 +64,8 @@
                             <td><a href="{{ url_for('show_comments')}}?filename={{info.filename}}",  class="button">Show Comments</a></td>
                             <form action="{{ url_for('add_comment')}}?filename={{info.filename}}&username={{info.username}}" method="post">
                             <fieldset>
+                                </br>
+                                </br>
                                 <div class="form-group">
                                     <input class="form-control" name="add_comment" placeholder="Add Comment" type="text"/>
                                 </div>
@@ -68,11 +73,11 @@
                                     <button class="btn btn-default" type="submit">Add Comment</button>
                                 </div>
                             </fieldset>
-                         {% endfor %}
+                        {% endfor %}
                     </tbody>
                 </div>
-                <div class="col-sm-6">Feed</div>
             </div>
+            <div class="col-sm-6">Feed</div>
         </div>
     </div>
 

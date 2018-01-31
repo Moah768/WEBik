@@ -5,8 +5,23 @@
 {% endblock %}
 
 {% block main %}
-<h1>
-    <iframe src="{{gif_url}}"</iframe>
-</h1>
+<body>
+    {% for url in gifs %}
+
+        <img src="{{url}}">
+        <form action="{{ url_for('gif_uploaden')}}?url={{url}}" method="post">
+        <fieldset>
+            <div class="form-group">
+                <input autocomplete="off" autofocus class="form-control" name="description" placeholder="Description" type="text"/>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-default" type="submit">Upload GIF</button>
+            </div>
+        </fieldset>
+    </form>
+
+    {% endfor %}
+</body>
+
 
 {% endblock %}
