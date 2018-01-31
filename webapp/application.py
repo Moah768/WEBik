@@ -713,14 +713,16 @@ def remove_following():
 @app.route("/bio", methods=["GET", "POST"])
 @login_required
 def bio():
-
+    # get user id
     userid = session["user_id"]
 
     if request.method == "POST":
+        # retrieve bio
         bio = request.form.get("bio")
         if not request.form.get("bio"):
             return apology("must fill in a bio")
 
+    # update userstable
         else:
             db.execute("UPDATE users SET bio = :new_bio WHERE  id = :userid", new_bio = bio, userid = userid)
 
@@ -766,6 +768,7 @@ def add_comment():
         user_info =  db.execute("SELECT * FROM users WHERE username = :username", username = username_photo)
         full_name = user_info[0]["full_name"]
 
+        # select all the comments on this file
         selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
 
         return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo,
@@ -787,6 +790,7 @@ def show_comments():
     user_info =  db.execute("SELECT * FROM users WHERE username = :username", username = username_photo)
     full_name = user_info[0]["full_name"]
 
+    # select all the comments on this file
     selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
 
     return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo,
