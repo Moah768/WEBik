@@ -39,7 +39,7 @@ Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
 | **upload_file()**         | Een link voor het makkelijk terughalen van fotos                                              |  POST          |
 | **like()**                | Met deze functie kan een gif of foto leuk gevonden worden                                     |  POST          |
 | **dislike()**             | Met deze functie kan je je like terugtrekken                                                  |  POST          |
-| **timeline()**            | Laat alle uploads van de mensen die jij volgt zien                                            |  POST          |
+| **timeline()**            | Laat alle uploads van de mensen die jij volgt zien (kom je via logo)                          |  POST          |
 | **settings()**            | Ga naar instellingen waar je je bio/profiel foto kan veranderen                               |  POST          |
 | **trending()**            | Laat van alle gebruikers de uploads zien gesorteerd op meeste likes                           |  POST          |
 | **delete()**              | Verwijder een geuploade foto of gif van je profiel                                            |  POST          |
@@ -54,11 +54,13 @@ Verschillende functies waarbij aangegeven staat of deze GET/POST zijn:
 
 
 #### Views
-Test
-Schermen gegroepeerd en de links met pijlen aangegeven:
+Inloggen Voorbeeld
 <img src ="screenshots/Inloggen.png">
-<img src = "screenshots/Registreren.png">
+Register Voorbeeld
+<img src = "screenshots/Register.png">
+Trending Voorbeeld
 <img src = "screenshots/Trending.png">
+Volgers Voorbeeld
 <img src = "screenshots/Volgers.png">
 
 
@@ -79,7 +81,7 @@ Een korte lijst van plugins en frameworks:
 * buttons: http://getbootstrap.com/docs/4.0/components/buttons/
 * GIF’s: https://developers.giphy.com/docs/
 
-#####Verdeling
+##### Verdeling
 Als we terugblikken op het project na afloop zijn er nauwelijks onderdelen in de website die bijna volledig alleen zijn gemaakt door een lid van het team. Het overgoten deel van de functies hebben we gemaakt tijdens de dagelijkse bijeenkomsten. Het vragen en geven van hulp was iets dat elke dag voorkwam. Wel was het zo dat er een aantal onderdelen waren waar een bepaald lid meer tijd aan besteed dan de rest. Hieronder een korte opsomming van de wat grotere taken waren:
 
 Bibi: Het uploaden van foto’s, lay-out , toevoegen van comment’s
