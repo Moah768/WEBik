@@ -690,7 +690,7 @@ def profile_picture():
             filename = "profilepic_{}_{}{}".format(username, number_files, extension)
             file.save(os.path.join(path, filename))
 
-            # put the directory in database
+        # put the directory in database
             db.execute("UPDATE users SET profile_pic_directory = :new_profile_pic_directory, filename = :filename WHERE  id = :userid",\
                         new_profile_pic_directory = os.path.join(username, filename), filename = filename, userid = userid)
 
