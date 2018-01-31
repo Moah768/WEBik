@@ -15,7 +15,7 @@ body
   padding: 0;
 }
 
-.rounded
+/*.rounded
 {
     display: grid;
     color:black;
@@ -34,6 +34,13 @@ h5 {
     font-family: 'Raleway', sans-serif;
     font-size: 14;
     color: black;
+}*/
+.colomborder{
+    border: 4px solid #B22222;
+    border-radius: 20px;
+    -moz-box-shadow:: 6px 6px 5px #999;
+    -webkit-box-shadow:: 6px 6px 5px #999;
+    box-shadow:: 6px 6px 5px #999;
 }
 
 
@@ -66,9 +73,9 @@ h5 {
     cursor: pointer;
     font-weight: bold;
     font-size: 100%;
-    background: #3366cc;
+    background: #B22222;
     color: #fff;
-    border: 1px solid #3366cc;
+    border: 1px solid #B22222;
     border-radius: 5px;
     -moz-box-shadow:: 6px 6px 5px #999;
     -webkit-box-shadow:: 6px 6px 5px #999;
@@ -119,7 +126,19 @@ h5 {
     -webkit-box-shadow:: 6px 6px 5px #999;
     box-shadow:: 6px 6px 5px #999;
 }
+.profileborder{
+    border-radius: 100px 40px;
+    background: #F5F5F5;
+    padding: 20px;
 
+}
+
+.photoborder{
+    border-radius: 15px;
+    background: #F5F5F5;
+    padding: 20px;
+    height: 450px;
+}
 #slideshow {
     margin: 50px auto;
     position: relative;
