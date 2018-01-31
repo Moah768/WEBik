@@ -6,8 +6,6 @@
     text-align: center;
 }
 
-
-
 body
 {
   background: #FFFFFF;
@@ -136,9 +134,22 @@ h5 {
 .photoborder{
     border-radius: 15px;
     background: #F5F5F5;
-    padding: 20px;
+    padding: 50px;
     height: 450px;
 }
+
+.photoborder img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    object-fit: cover;
+    max-width: 80%;
+    height: auto;
+    background-color: white;
+    margin-bottom: 25px;
+}
+
+
 #slideshow {
     margin: 50px auto;
     position: relative;

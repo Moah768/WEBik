@@ -781,7 +781,6 @@ def show_comments():
     filename = request.args.get("filename")
 
     filetype = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
-    print(filetype)
 
     selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
 
