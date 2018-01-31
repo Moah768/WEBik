@@ -14,20 +14,9 @@ from werkzeug.utils import secure_filename
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif'])
 
 
-#def apology(message, code=400):
-#    """Renders message as an apology to user."""
-#    def escape(s):
-#        """
-#        Escape special characters.
-#
-#        https://github.com/jacebrowning/memegen#special-characters
-#        """
-#       for old, new in [("-", "--"), (" ", "-"), ("_", "__"), ("?", "~q"),
-#                        ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
-#           s = s.replace(old, new)
-#       return s
-#   return render_template("apology.html", top=code, bottom=escape(message)), code
+
 def apology(message):
+    """Shows error if somethings not working and the reason """
     return render_template("apology.html", message = message)
 
 
@@ -47,14 +36,15 @@ def login_required(f):
     return decorated_function
 
 
-#check of allowed extensions ook hier in moet worden ingevoegd
+
 def allowed_file(filename):
+    """Checks if file is allowed"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def liked_photos(userid):
-
+    """Gives liked images/gifs"""
     filenames = db.execute("SELECT filename FROM likes WHERE own_id = :userid and like = 1", userid = userid)
 
     liked_filenames = [filename["filename"] for filename in filenames]
@@ -64,7 +54,7 @@ def liked_photos(userid):
 
 
 def following_users(userid):
-
+    """"Gives users that follow the current user"""
     following = db.execute("SELECT following_username FROM volgend WHERE own_id = :userid", userid = userid)
     following_users = [user["following_username"] for user in following]
 
@@ -72,7 +62,7 @@ def following_users(userid):
 
 
 def get_id(username):
-
+    """ Gets current users id""""
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
     id_username = id_username[0]["id"]
 
