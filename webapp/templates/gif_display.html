@@ -9,6 +9,8 @@
     {% for url in gifs %}
 
         <img src="{{url}}">
+        <br>
+        <br>
         <form action="{{ url_for('gif_uploaden')}}?url={{url}}" method="post">
         <fieldset>
             <div class="form-group">
