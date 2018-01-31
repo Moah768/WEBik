@@ -53,6 +53,7 @@
 
                             <form action="{{ url_for('add_comment')}}?filename={{info.filename}}&username={{info.username}}" method="post">
                             <fieldset>
+                                </br>
                                 <div class="form-group">
                                     <input class="form-control" name="add_comment" placeholder="Add Comment" type="text"/>
                                 </div>
@@ -60,8 +61,6 @@
                                     <button class="btn btn-default" type="submit">Add Comment</button>
                                 </div>
                             </fieldset>
-                            </br>
-                            </br>
                         {% endfor %}
 
                     </tbody>
