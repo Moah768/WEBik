@@ -36,26 +36,44 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
+                        </br>
                         <a class="navbar-brand" href="{{ url_for('timeline') }}"><span class="blue">FOODSHOW</span></a>
                     </div>
                     <div class="collapse navbar-collapse" id="navbar">
                         {% if session.user_id %}
                             <ul class="nav navbar-nav">
-                                <li><a href="{{ url_for('trending') }}">#TRENDING</a></li>
-                                <li><a href="{{ url_for('search') }}">Search</a></li>
-                                <li><a href="{{ url_for('index') }}">Your profile</a></li>
+                                <li></br><a href="{{ url_for('trending') }}">#TRENDING</a></li>
+                                <li></br><a href="{{ url_for('index') }}">Your profile</a></li>
+                                <li>
+                                    </br>
+                                    <form action="{{ url_for('search') }}" method="post">
+                                    <div class="form-group">
+                                        <input autocomplete="off" autofocus class="form-control" name="search_input" placeholder="Name or Username" type="text"/>
+                                    </div>
+                                </li>
+                                <li>
+                                    </br>
+                                    <div class="form-group">
+                                        <button class="btn btn-default" type="submit">Search</button>
+                                    </div>
+                                    </form>
+                                </li>
+
+
+                                <!--<li><a href="{{ url_for('search') }}">Search</a></li> -->
+
 
 
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a href="{{ url_for('gif') }}">Upload GIF</a></li>
-                                <li><a href="{{ url_for('uploaden') }}">Upload picture</a></li>
-                                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+                                <li></br><a href="{{ url_for('gif') }}">Upload GIF</a></li>
+                                <li></br><a href="{{ url_for('uploaden') }}">Upload picture</a></li>
+                                <li></br><a href="{{ url_for('logout') }}">Log Out</a></li>
                             </ul>
                         {% else %}
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a href="{{ url_for('register') }}">Register</a></li>
-                                <li><a href="{{ url_for('login') }}">Log In</a></li>
+                                <li></br><a href="{{ url_for('register') }}">Register</a></li>
+                                <li></br><a href="{{ url_for('login') }}">Log In</a></li>
                             </ul>
                         {% endif %}
                     </div>

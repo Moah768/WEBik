@@ -511,7 +511,6 @@ def like():
             db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
                     likes = total_likes, filename = filename)
 
-
     return redirect(current_page)
 
 @app.route("/dislike", methods=["GET", "POST"])
