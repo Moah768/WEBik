@@ -4,12 +4,10 @@ from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
 
-
 # added for uploading files
 import os
 from werkzeug.utils import secure_filename
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif'])
-
 
 import datetime
 import giphy_client
@@ -21,7 +19,6 @@ import json
 
 # configure application
 app = Flask(__name__)
-
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -54,17 +51,16 @@ def index():
     userid = session["user_id"]
 
     user_profile = db.execute("SELECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
+    file_info = db.execute("SElECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
+
     user_info = db.execute("SELECT bio, filename, full_name, username  FROM users WHERE id = :userid", userid = userid)
     bio = user_info[0]['bio']
     profile_picture = user_info[0]["filename"]
     full_name = user_info[0]["full_name"]
     username = user_info[0]["username"]
-    users = db.execute("SELECT username, full_name FROM users WHERE id = :userid", userid = userid)
+    file_name = user_info[0]["filename"]
 
 
-    filename = db.execute("SELECT username FROM users WHERE id = :userid", userid = userid)
-
-    file_info = db.execute("SElECT * FROM user_uploads WHERE id = :userid ORDER BY date DESC", userid = userid)
 
     # counter for followers and following on the profile page of each users
     id_username = db.execute("SELECT id FROM users WHERE username = :username", username = username)
@@ -73,9 +69,6 @@ def index():
     followers_info = db.execute("SELECT own_username, own_full_name FROM volgend WHERE following_id = :id", id= id_username)
     following_count = len(following_info)
     followers_count = len(followers_info)
-
-
-
 
     return render_template("index.html", full_name = full_name, username = username, file_info = file_info, bio=bio, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
@@ -107,9 +100,6 @@ def profile():
 
     return render_template("profile.html", username=username, full_name=full_name, bio = bio, user_profile = user_profile, \
                             profile_picture=profile_picture, following_count=following_count, followers_count=followers_count)
-
-
-
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -338,6 +328,7 @@ def following():
 @app.route("/uploaden", methods=["GET", "POST"])
 @login_required
 def uploaden():
+    """Upload a picture to your profile"""
     userid = session["user_id"]
 
     if request.method == "POST":
@@ -389,6 +380,7 @@ def uploaden():
 @login_required
 def gif():
 
+
     if request.method == "POST":
 
         api_instance = giphy_client.DefaultApi()
@@ -425,6 +417,7 @@ def gif():
 @app.route("/gif_uploaden", methods=["GET", "POST"])
 @login_required
 def gif_uploaden():
+    """Upload GIF to your profile"""
     userid = session["user_id"]
 
     if request.method == "POST":
