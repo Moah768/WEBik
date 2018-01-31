@@ -761,13 +761,15 @@ def add_comment():
         # retrieve info via filename from user_uploads
         filetype = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
 
-        #retrieve username from the photo
+        #retrieve username en full name from the uploaders photo's
         username_photo = filetype[0]["username"]
+        user_info =  db.execute("SELECT * FROM users WHERE username = :username", username = username_photo)
+        full_name = user_info[0]["full_name"]
 
         selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
 
         return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo,
-                            selected_comments = selected_comments)
+                            selected_comments = selected_comments, full_name = full_name)
     else:
         return render_templare("index.html")
 
@@ -780,9 +782,12 @@ def show_comments():
     # retrieve info via filename from user_uploads
     filetype = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
 
-    #retrieve username from the photo
+    #retrieve username en full name from the uploaders photo's
     username_photo = filetype[0]["username"]
+    user_info =  db.execute("SELECT * FROM users WHERE username = :username", username = username_photo)
+    full_name = user_info[0]["full_name"]
 
     selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
 
-    return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo, selected_comments = selected_comments)
+    return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo,
+    selected_comments = selected_comments, full_name = full_name)

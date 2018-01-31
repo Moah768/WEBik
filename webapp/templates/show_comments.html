@@ -10,7 +10,8 @@
 
     {% if i.filetype == "gif" %}
         <img src ="{{i.filename}}">
-
+        <br>
+        <br>
 
     <form action="{{ url_for('add_comment')}}?filename={{i.filename}}" method="post">
         <fieldset>
@@ -25,6 +26,8 @@
 
     {% else %}
         <img src= "{{ url_for('uploaden')}}/{{username_photo}}/{{filename}}" >
+        <br>
+        <br>
     <form action="{{ url_for('add_comment')}}?filename={{filename}}" method="post">
         <fieldset>
             <div class="form-group">
@@ -62,10 +65,10 @@
         {% endfor %}
         <tfoot>
             <tr>
-<!--
+
          <a href="profile?fullname={{full_name}}&username={{username_photo}}"class="button">Go to {{username_photo}}'s profile </a>
             </tr>
         </tfoot>
     </table>
--->
+
 {% endblock %}
