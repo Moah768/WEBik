@@ -5,13 +5,38 @@
 {% endblock %}
 
 {% block main %}
-<div class="grid-container">
-        <div class="row">
-            <div class="col-sm-4" ></div>
-            <div class="col-sm-4 rounded">
+ <body>
+        <form action="{{ url_for('login') }}" method="post">
+
+            <div class="grid-container">
+                <div class="row">
+                    <div class="col-sm-7" >
+                          <div id="slideshow">
+                           <div>
+                             <img src="//i.pinimg.com/564x/72/6d/80/726d80d1046723a8a721611f7d600ae7.jpg" >
+                           </div>
+                           <div>
+                             <img src="//i.pinimg.com/originals/07/20/92/072092adbb732f31ce6bdbf16304b4ee.jpg" >
+                           </div>
+                        </div>
+                        <script>
+                        $("#slideshow > div:gt(0)").hide();
+
+                        setInterval(function() {
+                          $('#slideshow > div:first')
+                            .fadeOut(1000)
+                            .next()
+                            .fadeIn(1000)
+                            .end()
+                            .appendTo('#slideshow');
+                        },  3000);
+                        </script>
+                    </div>
+
+            <div class="col-sm-4 registerborder">
 
     <h1>
-        Registreren
+        Register
     </h1>
     </br>
 

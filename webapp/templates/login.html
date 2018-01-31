@@ -10,26 +10,72 @@
 
             <div class="grid-container">
                 <div class="row">
-                    <div class="col-sm-4" ></div>
-                    <div class="col-sm-4 rounded" >
-                        <h1>Inloggen</h1>
-                        </br>
-                        <fieldset>
-                            <div class="form-group">
-                                <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" name="password" placeholder="Password" type="password"/>
-                            </div>
-                            <div class="form-group">
-                                <button class="btn btn-default" type="submit">Log In</button>
-                            </div>
-                        </fieldset>
+                    <div class="col-sm-7" >
+                          <div id="slideshow">
+                           <div>
+                             <img src="//i.pinimg.com/564x/72/6d/80/726d80d1046723a8a721611f7d600ae7.jpg" >
+                           </div>
+                           <div>
+                             <img src="//i.pinimg.com/originals/07/20/92/072092adbb732f31ce6bdbf16304b4ee.jpg" >
+                           </div>
+                        </div>
+                        <script>
+                        $("#slideshow > div:gt(0)").hide();
 
+                        setInterval(function() {
+                          $('#slideshow > div:first')
+                            .fadeOut(1000)
+                            .next()
+                            .fadeIn(1000)
+                            .end()
+                            .appendTo('#slideshow');
+                        },  3000);
+                        </script>
                     </div>
+                        <div class="col-sm-4 loginborder" >
+                            <h1>Inloggen</h1>
+                            <br>
+                            <fieldset>
+                                <div class="form-group">
+                                    <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" name="password" placeholder="Password" type="password"/>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-default" type="submit">Log In</button>
+                                </div>
+                            </fieldset>
+                            </br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+
+
+                            <div class ="row">
+                                <div class="col-sm-6" ></div>
+                                <a href="{{ url_for('register') }}", class = "registerbutton">Register</a>
+                            </div>
+
+                        </div>
                 </div>
             </div>
 
+
+
+
         </form>
+
+
+
     </body>
+
 {% endblock %}
