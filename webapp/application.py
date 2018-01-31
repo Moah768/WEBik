@@ -157,7 +157,7 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
-
+    # retrieve information from form
     full_name = request.form.get("full_name")
     username = request.form.get("username")
     password = request.form.get("password")
@@ -453,7 +453,7 @@ def gif_uploaden():
 @app.route("/search", methods=["GET", "POST"])
 @login_required
 def search():
-    """Weergeeft een tabel met alle gebruikers"""
+    """Search in all users"""
     userid = session["user_id"]
 
     following_user = following_users(userid)
@@ -472,12 +472,13 @@ def search():
 
 @app.route('/uploaden/<user>/<filename>')
 def uploaded_file(user, filename):
+    "Upload link for retrieving files"
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], user), filename)
 
 @app.route("/like", methods=["GET", "POST"])
 @login_required
 def like():
-
+    """Like a picture or a gif"""
     userid = session["user_id"]
 
     # get the filename of the picture that you want to like
@@ -523,7 +524,7 @@ def like():
 @app.route("/dislike", methods=["GET", "POST"])
 @login_required
 def dislike():
-
+    """Unlike a picture or a gif"""
     userid = session["user_id"]
     # get the filename of the picture that you want to dislike
     filename = request.args.get('filename')
@@ -561,6 +562,7 @@ def dislike():
 @app.route("/timeline", methods=["GET", "POST"])
 @login_required
 def timeline():
+    """Shows all uploads from the people you follow"""
     userid = session["user_id"]
 
     # get al information of that users's profile
@@ -600,12 +602,14 @@ def timeline():
 @app.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
+    """Go settings where you can change your profile"""
     return render_template("settings.html")
 
 
 @app.route("/trending", methods=["GET", "POST"])
 @login_required
 def trending():
+    """ Shows all uploads from all users sorted on most likes"""
     userid = session["user_id"]
 
     # get al information of that users's profile
@@ -642,6 +646,7 @@ def trending():
 @app.route("/delete", methods=["GET", "POST"])
 @login_required
 def delete():
+    """Delete an upload from your profile"""
     # get name of file you want to delete
     delete_name = request.args.get('filename')
 
@@ -653,7 +658,7 @@ def delete():
 @app.route("/profile_picture", methods=["GET", "POST"])
 @login_required
 def profile_picture():
-
+    """ Upload profile picture"""
     userid = session["user_id"]
 
     if request.method == "POST":
@@ -702,6 +707,7 @@ def profile_picture():
 @app.route("/remove_following", methods=["GET", "POST"])
 @login_required
 def remove_following():
+    """Unfollow an account"""
     userid = session["user_id"]
 
     following_username = request.args.get('username')
@@ -714,6 +720,7 @@ def remove_following():
 @app.route("/bio", methods=["GET", "POST"])
 @login_required
 def bio():
+    """Upload a bio on yout profile"""
     # get user id
     userid = session["user_id"]
 
@@ -737,6 +744,7 @@ def bio():
 @app.route("/add_comment", methods=["GET", "POST"])
 @login_required
 def add_comment():
+    """Add a comment to a picture/gif"""
     if request.method == "POST":
         # retrieve comment
         comment = request.form.get("add_comment")
@@ -780,6 +788,7 @@ def add_comment():
 @app.route("/show_comments", methods=["GET", "POST"])
 @login_required
 def show_comments():
+    "Show comments on a picture/gif and enlarge picture/gif"
     # get filename
     filename = request.args.get("filename")
 
