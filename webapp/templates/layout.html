@@ -1,6 +1,3 @@
-
-<!-- !!!!letterlijk overgenomen van finance!!!!  -->
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -45,7 +42,7 @@
                         {% if session.user_id %}
                             <ul class="nav navbar-nav">
                                 <li></br><a href="{{ url_for('trending') }}">#TRENDING</a></li>
-                                <li></br><a href="{{ url_for('index') }}">Your profile</a></li>
+                                <li></br><a href="{{ url_for('index') }}"><img src="static/avatar-navbar.png" height="30" width="30"></a></li>
                                 <li>
                                     </br>
                                     <form action="{{ url_for('search') }}" method="post">
@@ -67,9 +64,9 @@
 
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
-                                <li></br><a href="{{ url_for('gif') }}">Upload GIF</a></li>
-                                <li></br><a href="{{ url_for('uploaden') }}">Upload picture</a></li>
-                                <li></br><a href="{{ url_for('logout') }}">Log Out</a></li>
+                                <li></br><a href="{{ url_for('gif') }}"><img src="static/gif-navbar.png" height="30" width="30"></a></li>
+                                <li></br><a href="{{ url_for('uploaden') }}"><img src="static/photo-navbar.png" height="30" width="30"></a></li>
+                                <li></br><a href="{{ url_for('logout') }}"><img src="static/exit.png" height="30" width="30"></a></li>
                             </ul>
                         {% else %}
                             <ul class="nav navbar-nav navbar-right">

@@ -26,14 +26,19 @@
             <div class="row">
                 {% if username not in following_user %}
                     <div class="col-sm-6">
+                        </br>
+                        </br>
                         <a href="{{ url_for('add_following') }}?fullname={{full_name}}&username={{username}}" class="button">Follow</a>
                     </div>
                 {% else %}
                     <div class="col-sm-6">
+                        </br>
+                        </br>
                         <td><a href="{{ url_for('remove_following') }}?fullname={{full_name}}&username={{username}}",  class="button">Unfollow</a></td>
                     </div>
                 {% endif %}
             </div>
+            </br>
             </br>
         </div>
         <div class = "col-sm-1"> </div>
@@ -59,9 +64,16 @@
                             {% endif %}
                             <td><a href="{{ url_for('show_comments')}}?filename={{info.filename}}",  class="button">Enlarge and Comments</a></td>
                     </tbody>
+                    </br>
+                    </br>
+                    </br>
+                    </br>
+                    </br>
+                    </br>
                 </div>
                 {% endfor %}
             </div>
+
         </div>
     </div>
 
