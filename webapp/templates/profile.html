@@ -16,20 +16,23 @@
             </br>
             <div class="button-wrapper">
                 <div class="col-sm-6">
-                    <a href="{{ url_for('followers') }}?username={{username}}" class="button">Volgers: {{followers_count}} </a>
+                    <a href="{{ url_for('followers') }}?username={{username}}" class="button">Followers: {{followers_count}} </a>
                 </div>
                 <div class="col-sm-6">
-                    <a href="{{ url_for('following') }}?username={{username}}" class="button">Volgend: {{following_count}} </a>
+                    <a href="{{ url_for('following') }}?username={{username}}" class="button">Following: {{following_count}} </a>
                 </div>
             </div>
             </br>
             <div class="row">
-                <div class="col-sm-6">
-                    <a href="{{ url_for('add_following') }}?fullname={{full_name}}&username={{username}}" class="button">Follow</a>
-                </div>
-                <div class="col-sm-6">
-                    <td><a href="{{ url_for('remove_following') }}?fullname={{full_name}}&username={{username}}",  class="button">Unfollow</a></td>
-                </div>
+                {% if username not in following_user %}
+                    <div class="col-sm-6">
+                        <a href="{{ url_for('add_following') }}?fullname={{full_name}}&username={{username}}" class="button">Follow</a>
+                    </div>
+                {% else %}
+                    <div class="col-sm-6">
+                        <td><a href="{{ url_for('remove_following') }}?fullname={{full_name}}&username={{username}}",  class="button">Unfollow</a></td>
+                    </div>
+                {% endif %}
             </div>
             </br>
         </div>
@@ -46,9 +49,9 @@
                         {% endif %}
                             <p>
                             <b>{{info.username}}:</b> {{info.description}}
-                            </br>
-                            +{{info.likes}}
+                            </br> +{{info.likes}}
                             </p>
+
                             {% if info.filename not in liked_filenames %}
                                 <td><a href="{{ url_for('like')}}?filename={{info.filename}}",  class="button">Like</a></td>
                             {% else %}

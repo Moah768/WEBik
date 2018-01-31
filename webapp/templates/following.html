@@ -11,9 +11,10 @@
         </style>
         <thead>
             <tr>
-                <th>Naam</th>
-                <th>Gebruikersnaam</th>
-                <th>Profiel</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Profile</th>
+                <th>Unfollow</th>
             </tr>
         </thead>
         <tbody>
@@ -21,8 +22,8 @@
                 <tr>
                     <td>{{ i.following_full_name }}</td>
                     <td>{{ i.following_username }}</td>
-                    <td><a href="{{ url_for('profile') }}?fullname={{i.following_full_name}}&username={{i.following_username}}" class="button">Bekijk profiel</a></td>
-                    <td><a href="{{ url_for('remove_following') }}?fullname={{i.following_full_name}}&username={{i.following_username}}",  class="button">Ontvolg profiel</a></td>
+                    <td><a href="{{ url_for('profile') }}?fullname={{i.following_full_name}}&username={{i.following_username}}" class="button">View Profile</a></td>
+                    <td><a href="{{ url_for('remove_following') }}?fullname={{i.following_full_name}}&username={{i.following_username}}",  class="button">Unfollow</a></td>
                 </tr>
             {% endfor %}
         </tbody>
