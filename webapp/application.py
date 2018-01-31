@@ -771,7 +771,7 @@ def add_comment():
         return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo,
                             selected_comments = selected_comments, full_name = full_name)
     else:
-        return render_templare("index.html")
+        return render_template("index.html")
 
 @app.route("/show_comments", methods=["GET", "POST"])
 @login_required

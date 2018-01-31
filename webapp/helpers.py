@@ -14,19 +14,23 @@ from werkzeug.utils import secure_filename
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif'])
 
 
-def apology(message, code=400):
-    """Renders message as an apology to user."""
-    def escape(s):
-        """
-        Escape special characters.
+#def apology(message, code=400):
+#    """Renders message as an apology to user."""
+#    def escape(s):
+#        """
+#        Escape special characters.
+#
+#        https://github.com/jacebrowning/memegen#special-characters
+#        """
+#       for old, new in [("-", "--"), (" ", "-"), ("_", "__"), ("?", "~q"),
+#                        ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
+#           s = s.replace(old, new)
+#       return s
+#   return render_template("apology.html", top=code, bottom=escape(message)), code
+def apology(message):
+    return render_template("apology.html", message = message)
 
-        https://github.com/jacebrowning/memegen#special-characters
-        """
-        for old, new in [("-", "--"), (" ", "-"), ("_", "__"), ("?", "~q"),
-                         ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
-            s = s.replace(old, new)
-        return s
-    return render_template("apology.html", top=code, bottom=escape(message)), code
+
 
 
 def login_required(f):
