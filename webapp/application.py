@@ -734,13 +734,55 @@ def bio():
 @app.route("/add_comment", methods=["GET", "POST"])
 @login_required
 def add_comment():
-    return apology("add")
+    if request.method == "POST":
+        # retrieve comment
+        comment = request.form.get("add_comment")
 
+        # check if there is an input
+        if not request.form.get("add_comment"):
+            return apology("must fill in a comment")
+
+        # retrieve filename image/gif
+        filename = request.args.get("filename")
+
+        # retrieve uploaders name uploader from file
+        information_uploader = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
+        username_photo = information_uploader[0]["username"]
+
+        # retrieve own username
+        users = db.execute("SELECT username FROM users WHERE id = :userid", userid = session["user_id"])
+        own_username = users[0]["username"]
+
+        # put everything in comment database
+        db.execute("INSERT INTO comments (own_username, username_photo, filename, comment) VALUES (:own_username,\
+                    :username_photo, :filename, :comment)",own_username = own_username, username_photo = username_photo,
+                    filename = filename, comment = comment)
+
+        # retrieve info via filename from user_uploads
+        filetype = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
+
+        #retrieve username from the photo
+        username_photo = filetype[0]["username"]
+
+        selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
+
+        return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo,
+                            selected_comments = selected_comments)
+    else:
+        return render_templare("index.html")
 
 @app.route("/show_comments", methods=["GET", "POST"])
 @login_required
 def show_comments():
+    # get filename
     filename = request.args.get("filename")
+
+    # retrieve info via filename from user_uploads
     filetype = db.execute("SELECT * FROM user_uploads WHERE filename = :filename", filename = filename)
+
+    #retrieve username from the photo
     username_photo = filetype[0]["username"]
-    return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo)
+
+    selected_comments = db.execute("SELECT * FROM comments WHERE filename = :filename ORDER BY date DESC", filename = filename)
+
+    return render_template("show_comments.html", filename = filename,  filetype = filetype, username_photo = username_photo, selected_comments = selected_comments)
