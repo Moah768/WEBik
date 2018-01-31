@@ -73,11 +73,15 @@ Lijst van helper functie en hun omschrijving:
 * **liked_photos():** Geeft gelikete fotos terug.
 
 
-
-
 #### Plugins/Frameworks
 Een korte lijst van plugins en frameworks:
 * Navigatie-bar: http://getbootstrap.com/docs/4.0/components/navbar/
 * buttons: http://getbootstrap.com/docs/4.0/components/buttons/
 * GIF’s: https://developers.giphy.com/docs/
 
+#####Verdeling
+Als we terugblikken op het project na afloop zijn er nauwelijks onderdelen in de website die bijna volledig alleen zijn gemaakt door een lid van het team. Het overgoten deel van de functies hebben we gemaakt tijdens de dagelijkse bijeenkomsten. Het vragen en geven van hulp was iets dat elke dag voorkwam. Wel was het zo dat er een aantal onderdelen waren waar een bepaald lid meer tijd aan besteed dan de rest. Hieronder een korte opsomming van de wat grotere taken waren:
+
+Bibi: Het uploaden van foto’s, lay-out , toevoegen van comment’s
+Paul: De settings page en alles wat daarbij hoort (profiel bijwerken), de zoek functie en profiel page
+Ahmed: Gif implementatie, like en dislike functie
