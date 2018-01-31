@@ -316,6 +316,7 @@ def add_following():
 @login_required
 def following():
     """Displays a list with all the users that you are following"""
+    userid = session["user_id"]
 
     # check if you are going to look at another profile's list of following or your own list
     username = request.args.get('username')
@@ -469,45 +470,49 @@ def uploaded_file(user, filename):
 @app.route("/like", methods=["GET", "POST"])
 @login_required
 def like():
+    if request.method == "POST":
 
-    userid = session["user_id"]
+        userid = session["user_id"]
 
-    # get the filename of the picture that you want to like
-    filename = request.args.get('filename')
+        # get the filename of the picture that you want to like
+        filename = request.args.get('filename')
 
-    # get the current page of the user to redirect to when the button is pushed
-    current_page = (request.referrer)
+        # get the current page of the user to redirect to when the button is pushed
+        current_page = (request.referrer)
 
-    # check if user already has liked the picture
-    check_likes = db.execute("SELECT like FROM likes WHERE own_id = :userid AND filename = :filename",
-                            userid = userid, filename = filename)
+        # check if user already has liked the picture
+        check_likes = db.execute("SELECT like FROM likes WHERE own_id = :userid AND filename = :filename",
+                                userid = userid, filename = filename)
 
-    # needed for total number of likes on picture
-    check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
-                                        filename = filename)
+        # needed for total number of likes on picture
+        check_likes_filename = db.execute("SELECT likes from user_uploads WHERE filename = :filename",
+                                            filename = filename)
 
-    # if you haven't liked the photo already set the like to 1
-    if len(check_likes) == 0:
-        db.execute("INSERT INTO likes (own_id, filename, like) VALUES(:userid, :filename, :like)",
-                    userid = userid, filename = filename, like = 1)
+        # if you haven't liked the photo already set the like to 1
+        if len(check_likes) == 0:
+            db.execute("INSERT INTO likes (own_id, filename, like) VALUES(:userid, :filename, :like)",
+                        userid = userid, filename = filename, like = 1)
 
-        # get total number of likes
-        total_likes = check_likes_filename[0]["likes"]
-        db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename", likes = total_likes, filename = filename)
-
-    # if you already liked the picture
-    else:
-        check_likes_user = check_likes[0]["like"]
-        if check_likes_user == 1:
-            return apology("you already liked this picture")
-        else:
-            # update the number of likes in user_uploads and likes
-            db.execute("UPDATE likes SET like = :like + 1 WHERE own_id = :userid AND filename = :filename",
-                    like = check_likes_user, userid = userid, filename = filename)
-
+            # get total number of likes
             total_likes = check_likes_filename[0]["likes"]
-            db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
-                    likes = total_likes, filename = filename)
+            db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename", likes = total_likes, filename = filename)
+
+        # if you already liked the picture
+        else:
+            check_likes_user = check_likes[0]["like"]
+            if check_likes_user == 1:
+                return apology("you already liked this picture")
+            else:
+                # update the number of likes in user_uploads and likes
+                db.execute("UPDATE likes SET like = :like + 1 WHERE own_id = :userid AND filename = :filename",
+                        like = check_likes_user, userid = userid, filename = filename)
+
+                total_likes = check_likes_filename[0]["likes"]
+                db.execute("UPDATE user_uploads SET likes = :likes + 1 WHERE filename = :filename",
+                        likes = total_likes, filename = filename)
+
+    else:
+        return render_template("index.html")
 
     return redirect(current_page)
 
