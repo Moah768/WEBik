@@ -8,7 +8,7 @@
 
 ### Paul van der Pijl
 
-## BELANGRIJK VOOR GEBRUIK:"" pip install giphy client "" UITVOEREN
+## BELANGRIJK VOOR GEBRUIK:"" pip install giphy_client "" UITVOEREN
 
 ### Samenvatting
 Het doel van onze webapplicatie is om een overzicht te krijgen van afbeeldingen en gifjes die:
