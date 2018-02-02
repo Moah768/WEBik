@@ -6,9 +6,11 @@
 
 ### Ahmed Moenna 11043768
 
-### Paul van der Pijl
+### Paul van der Pijl 11618361
 
 ## BELANGRIJK VOOR GEBRUIK:"" pip install giphy_client "" UITVOEREN
+
+### De link naar de productvideo: https://www.youtube.com/watch?v=3iLOzA8QivI&feature=youtu.be
 
 ### Samenvatting
 Het doel van onze webapplicatie is om een overzicht te krijgen van afbeeldingen en gifjes die:
